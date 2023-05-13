@@ -41,9 +41,10 @@ For building instructions refer to the [building section](#building).
 git clone 'https://gitlab.gnome.org/GNOME/evince'
 cd evince
 git clone 'https://github.com/fabian-thomas/cleaner-evince'
-git am cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
-git am ...
-git am ...
+# I suggest patching with context 0. This fixes applying some patches. 
+git am -C 0 cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
+git am -C 0 ...
+git am -C 0 ...
 # patch the code further (e.g., modify keybindings)
 # now build and install (see below)
 ```

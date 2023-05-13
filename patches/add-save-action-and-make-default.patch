@@ -1,0 +1,117 @@
+From 12a78cf4f103e79d2f3d8294c698cf7ba0515b55 Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Sat, 13 May 2023 10:45:23 +0200
+Subject: [PATCH] add save action and make default
+
+---
+ shell/ev-application.c  |  3 ++-
+ shell/ev-window.c       | 38 ++++++++++++++++++++++++++++++++------
+ shell/evince-toolbar.ui |  4 ++++
+ 3 files changed, 38 insertions(+), 7 deletions(-)
+
+diff --git a/shell/ev-application.c b/shell/ev-application.c
+index 980a3641..e1e90288 100644
+--- a/shell/ev-application.c
++++ b/shell/ev-application.c
+@@ -951,7 +951,8 @@ ev_application_startup (GApplication *gapplication)
+         const gchar *action_accels[] = {
+           "win.open",                   "<Ctrl>O", NULL,
+           "win.open-copy",              "<Ctrl>N", NULL,
+-          "win.save-as",                "<Ctrl>S", NULL,
++          "win.save",                   "<Ctrl>S", NULL,
++          "win.save-as",                "<Ctrl><Shift>S", NULL,
+           "win.print",                  "<Ctrl>P", NULL,
+           "win.show-properties",        "<alt>Return", NULL,
+           "win.copy",                   "<Ctrl>C", "<Ctrl>Insert", NULL,
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index 4d8629cd..e8574423 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -3255,6 +3255,31 @@ ev_window_cmd_save_as (GSimpleAction *action,
+ 	ev_window_save_as (window);
+ }
+ 
++static void
++ev_window_save (EvWindow *ev_window)
++{
++	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
++
++	ev_window_clear_save_job (ev_window);
++	priv->save_job = ev_job_save_new (priv->document,
++						     priv->uri, priv->uri);
++	g_signal_connect (priv->save_job, "finished",
++			  G_CALLBACK (ev_window_save_job_cb),
++			  ev_window);
++	/* The priority doesn't matter for this job */
++	ev_job_scheduler_push_job (priv->save_job, EV_JOB_PRIORITY_NONE);
++}
++
++static void
++ev_window_cmd_save (GSimpleAction *action,
++		       GVariant      *parameter,
++		       gpointer       user_data)
++{
++	EvWindow *window = user_data;
++
++	ev_window_save (window);
++}
++
+ static void
+ ev_window_cmd_send_to (GSimpleAction *action,
+ 		       GVariant      *parameter,
+@@ -3918,7 +3943,7 @@ document_modified_confirmation_dialog_response (GtkDialog *dialog,
+ 	switch (response) {
+ 	case GTK_RESPONSE_YES:
+ 		priv->close_after_save = TRUE;
+-		ev_window_save_as (ev_window);
++		ev_window_save (ev_window);
+ 		break;
+ 	case GTK_RESPONSE_NO:
+ 		gtk_widget_destroy (GTK_WIDGET (ev_window));
+@@ -3972,15 +3997,15 @@ ev_window_check_document_modified (EvWindow      *ev_window,
+ 				  G_CALLBACK (document_modified_reload_dialog_response),
+ 				  ev_window);
+ 	} else {
+-		text = g_markup_printf_escaped (_("Save a copy of document “%s” before closing?"),
++		text = g_markup_printf_escaped (_("Save “%s” before closing?"),
+                                                 gtk_window_get_title (GTK_WINDOW (ev_window)));
+-		secondary_text_command = _("If you don’t save a copy, changes will be permanently lost.");
++		secondary_text_command = _("If you don’t save, changes will be permanently lost.");
+ 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+-				_("Close _without Saving"),
+-				GTK_RESPONSE_NO,
+ 				_("C_ancel"),
+ 				GTK_RESPONSE_CANCEL,
+-				_("Save a _Copy"),
++				_("Close _without Saving"),
++				GTK_RESPONSE_NO,
++				_("Save"),
+ 				GTK_RESPONSE_YES,
+ 				NULL);
+ 		g_signal_connect (dialog, "response",
+@@ -6258,6 +6283,7 @@ static const GActionEntry actions[] = {
+ 	{ "new", ev_window_cmd_new_window },
+ 	{ "open", ev_window_cmd_file_open },
+ 	{ "open-copy", ev_window_cmd_file_open_copy },
++	{ "save", ev_window_cmd_save },
+ 	{ "save-as", ev_window_cmd_save_as },
+ 	{ "send-to", ev_window_cmd_send_to },
+ 	{ "open-containing-folder", ev_window_cmd_open_containing_folder },
+diff --git a/shell/evince-toolbar.ui b/shell/evince-toolbar.ui
+index b36e6718..a7a0e253 100644
+--- a/shell/evince-toolbar.ui
++++ b/shell/evince-toolbar.ui
+@@ -159,6 +159,10 @@
+         <attribute name="label" translatable="yes">_Save As…</attribute>
+         <attribute name="action">win.save-as</attribute>
+       </item>
++      <item>
++        <attribute name="label" translatable="yes">_Save</attribute>
++        <attribute name="action">win.save</attribute>
++      </item>
+     </section>
+     <section>
+       <item>
+-- 
+2.40.1
+
