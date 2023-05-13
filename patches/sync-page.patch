@@ -1,0 +1,86 @@
+diff --git a/libview/ev-view.c b/libview/ev-view.c
+index 1ffbf16b..4bfc5c35 100644
+--- a/libview/ev-view.c
++++ b/libview/ev-view.c
+@@ -9871,6 +9871,17 @@ ev_view_highlight_forward_search (EvView       *view,
+ 	gtk_widget_queue_draw (GTK_WIDGET (view));
+ }
+ 
++void
++ev_view_highlight_forward_search_page (EvView       *view,
++				gint page)
++{
++	ev_document_model_set_page (view->model, page-1);
++
++	/* _ev_view_transform_doc_rect_to_view_rect (view, page, &mapping->area, &view_rect); */
++	/* _ev_view_ensure_rectangle_is_visible (view, &view_rect); */
++	gtk_widget_queue_draw (GTK_WIDGET (view));
++}
++
+ /*** Selections ***/
+ static gboolean
+ gdk_rectangle_point_in (GdkRectangle *rectangle,
+diff --git a/libview/ev-view.h b/libview/ev-view.h
+index 74959c90..5971ca19 100644
+--- a/libview/ev-view.h
++++ b/libview/ev-view.h
+@@ -123,6 +123,9 @@ void            ev_view_find_cancel               (EvView         *view);
+ EV_PUBLIC
+ void            ev_view_highlight_forward_search (EvView       *view,
+ 						  EvSourceLink *link);
++EV_PUBLIC
++void            ev_view_highlight_forward_search_page (EvView       *view,
++						  gint page);
+ 
+ /* Cursor */
+ EV_PUBLIC
+diff --git a/shell/ev-gdbus.xml b/shell/ev-gdbus.xml
+index b6b50d12..df399e3f 100644
+--- a/shell/ev-gdbus.xml
++++ b/shell/ev-gdbus.xml
+@@ -19,6 +19,9 @@
+       <arg type='(ii)' name='source_point' direction='in'/>
+       <arg type='u' name='timestamp' direction='in'/>
+     </method>
++    <method name='SyncPage'>
++      <arg type='i' name='page' direction='in'/>
++    </method>
+     <signal name='SyncSource'>
+       <arg type='s' name='source_file' direction='out'/>
+       <arg type='(ii)' name='source_point' direction='out'/>
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index 605e5ca6..92ebf5e8 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -7485,6 +7485,21 @@ handle_sync_view_cb (EvEvinceWindow        *object,
+ 
+ 	return TRUE;
+ }
++
++static gboolean
++handle_sync_page_cb (EvEvinceWindow        *object,
++		     GDBusMethodInvocation *invocation,
++		     gint                  page,
++		     EvWindow              *window)
++{
++	EvWindowPrivate *priv = GET_PRIVATE (window);
++
++	ev_view_highlight_forward_search_page (EV_VIEW (priv->view), page);
++
++	ev_evince_window_complete_sync_page (object, invocation);
++
++	return TRUE;
++}
+ #endif /* ENABLE_DBUS */
+ 
+ static gboolean
+@@ -7573,6 +7588,9 @@ ev_window_init (EvWindow *ev_window)
+ 			g_signal_connect (skeleton, "handle-sync-view",
+ 					  G_CALLBACK (handle_sync_view_cb),
+ 					  ev_window);
++			g_signal_connect (skeleton, "handle-sync-page",
++					  G_CALLBACK (handle_sync_page_cb),
++					  ev_window);
+                 } else {
+                         g_printerr ("Failed to register bus object %s: %s\n",
+ 				    priv->dbus_object_path, error->message);

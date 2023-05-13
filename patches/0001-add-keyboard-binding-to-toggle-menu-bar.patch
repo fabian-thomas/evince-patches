@@ -1,0 +1,56 @@
+From e7aaab4366adcbf1c1d441672bad6af15e10b460 Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Fri, 10 Feb 2023 23:42:59 +0100
+Subject: [PATCH 1/6] add keyboard binding to toggle menu bar
+
+---
+ shell/ev-application.c |  1 +
+ shell/ev-window.c      | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/shell/ev-application.c b/shell/ev-application.c
+index bd4d64b0..a5de00cd 100644
+--- a/shell/ev-application.c
++++ b/shell/ev-application.c
+@@ -971,6 +971,7 @@ ev_application_startup (GApplication *gapplication)
+           "win.sizing-mode::automatic", "a", NULL,
+           "win.default-zoom",           "<Ctrl>0", "<Ctrl>KP_0", NULL,
+           "win.toggle-menu",            "F10", NULL,
++          "win.toggle-menubar",         "<alt>m", "F12", NULL,
+           "win.caret-navigation",       "F7", NULL,
+           "win.zoom-in",                "plus", "<Ctrl>plus", "KP_Add", "<Ctrl>KP_Add", "equal", "<Ctrl>equal", NULL,
+           "win.zoom-out",               "minus", "<Ctrl>minus", "KP_Subtract", "<Ctrl>KP_Subtract", NULL,
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index f653aaed..605e5ca6 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -655,6 +655,18 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
+ 				      !recent_view_mode);
+ }
+ 
++static void
++ev_window_cmd_action_menubar (GSimpleAction *action,
++			   GVariant      *parameter,
++			   gpointer       user_data)
++{
++	EvWindow *ev_window = user_data;
++	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
++
++	GtkWidget* menubar_widget = GTK_WIDGET(ev_toolbar_get_header_bar (EV_TOOLBAR (priv->toolbar)));
++	gtk_widget_set_visible(menubar_widget, !gtk_widget_get_visible(menubar_widget));
++}
++
+ static void
+ set_widget_visibility (GtkWidget *widget, gboolean visible)
+ {
+@@ -6428,6 +6440,7 @@ static const GActionEntry actions[] = {
+ 	{ "default-zoom", ev_window_cmd_set_default_zoom },
+ 	{ "escape", ev_window_cmd_escape },
+ 	{ "toggle-menu", ev_window_cmd_action_menu },
++	{ "toggle-menubar", ev_window_cmd_action_menubar },
+ 	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
+ 	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
+ 	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
+-- 
+2.40.1
+

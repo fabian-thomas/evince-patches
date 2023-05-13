@@ -1,0 +1,134 @@
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index 605e5ca6..05367258 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -3175,93 +3175,18 @@ ev_window_save_job_cb (EvJob     *job,
+ }
+ 
+ static void
+-file_save_dialog_response_cb (GtkWidget *fc,
+-			      gint       response_id,
+-			      EvWindow  *ev_window)
++ev_window_save_as (EvWindow *ev_window)
+ {
+ 	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
+-	gchar *uri;
+-
+-	if (response_id != GTK_RESPONSE_ACCEPT) {
+-		priv->close_after_save = FALSE;
+-		g_object_unref (fc);
+-		return;
+-	}
+-
+-        ev_window_file_chooser_save_folder (ev_window, GTK_FILE_CHOOSER (fc),
+-                                            G_USER_DIRECTORY_DOCUMENTS);
+-
+-	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (fc));
+-
+-	/* FIXME: remote copy should be done here rather than in the save job,
+-	 * so that we can track progress and cancel the operation
+-	 */
+ 
+ 	ev_window_clear_save_job (ev_window);
+ 	priv->save_job = ev_job_save_new (priv->document,
+-						     uri, priv->uri);
++						     priv->uri, priv->uri);
+ 	g_signal_connect (priv->save_job, "finished",
+ 			  G_CALLBACK (ev_window_save_job_cb),
+ 			  ev_window);
+ 	/* The priority doesn't matter for this job */
+ 	ev_job_scheduler_push_job (priv->save_job, EV_JOB_PRIORITY_NONE);
+-
+-	g_free (uri);
+-	g_object_unref (fc);
+-}
+-
+-static void
+-ev_window_save_as (EvWindow *ev_window)
+-{
+-	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
+-	GtkFileChooserNative *fc;
+-	gchar *base_name, *dir_name, *var_tmp_dir, *tmp_dir;
+-	GFile *file, *parent;
+-	const gchar *default_dir, *dest_dir, *documents_dir;
+-
+-	fc = gtk_file_chooser_native_new (
+-		_("Save As…"),
+-		GTK_WINDOW (ev_window), GTK_FILE_CHOOSER_ACTION_SAVE,
+-		_("_Save"),
+-		_("_Cancel"));
+-
+-	ev_document_factory_add_filters (GTK_WIDGET (fc), priv->document);
+-
+-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (fc), FALSE);
+-	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (fc), TRUE);
+-
+-	file = g_file_new_for_uri (priv->uri);
+-	base_name = priv->edit_name;
+-	parent = g_file_get_parent (file);
+-	dir_name = g_file_get_path (parent);
+-	g_object_unref (parent);
+-
+-	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (fc), base_name);
+-
+-	documents_dir = g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS);
+-	default_dir = g_file_test (documents_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR) ?
+-	              documents_dir : g_get_home_dir ();
+-
+-	tmp_dir = g_build_filename ("tmp", NULL);
+-	var_tmp_dir = g_build_filename ("var", "tmp", NULL);
+-	dest_dir = dir_name && !g_str_has_prefix (dir_name, g_get_tmp_dir ()) &&
+-			    !g_str_has_prefix (dir_name, tmp_dir) &&
+-	                    !g_str_has_prefix (dir_name, var_tmp_dir) ?
+-	                    dir_name : default_dir;
+-
+-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fc),
+-					     dest_dir);
+-
+-	g_object_unref (file);
+-	g_free (tmp_dir);
+-	g_free (var_tmp_dir);
+-	g_free (dir_name);
+-
+-	g_signal_connect (fc, "response",
+-			  G_CALLBACK (file_save_dialog_response_cb),
+-			  ev_window);
+-
+-	gtk_native_dialog_run (GTK_NATIVE_DIALOG (fc));
+ }
+ 
+ static void
+@@ -3991,15 +3916,15 @@ ev_window_check_document_modified (EvWindow      *ev_window,
+ 				  G_CALLBACK (document_modified_reload_dialog_response),
+ 				  ev_window);
+ 	} else {
+-		text = g_markup_printf_escaped (_("Save a copy of document “%s” before closing?"),
++		text = g_markup_printf_escaped (_("Save “%s” before closing?"),
+                                                 gtk_window_get_title (GTK_WINDOW (ev_window)));
+-		secondary_text_command = _("If you don’t save a copy, changes will be permanently lost.");
++		secondary_text_command = _("If you don’t save, changes will be permanently lost.");
+ 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+-				_("Close _without Saving"),
+-				GTK_RESPONSE_NO,
+ 				_("C_ancel"),
+ 				GTK_RESPONSE_CANCEL,
+-				_("Save a _Copy"),
++				_("Close _without Saving"),
++				GTK_RESPONSE_NO,
++				_("Save"),
+ 				GTK_RESPONSE_YES,
+ 				NULL);
+ 		g_signal_connect (dialog, "response",
+diff --git a/shell/evince-toolbar.ui b/shell/evince-toolbar.ui
+index 2cec7300..f72462dd 100644
+--- a/shell/evince-toolbar.ui
++++ b/shell/evince-toolbar.ui
+@@ -156,7 +156,7 @@
+     </section>
+     <section>
+       <item>
+-        <attribute name="label" translatable="yes">_Save As…</attribute>
++        <attribute name="label" translatable="yes">_Save</attribute>
+         <attribute name="action">win.save-as</attribute>
+       </item>
+     </section>

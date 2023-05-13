@@ -1,0 +1,28 @@
+From 7afa13497e94e87d81119f94dbb3d7a82ee5df7a Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Fri, 12 May 2023 23:17:23 +0200
+Subject: [PATCH] add annotation from right click menu
+
+---
+ shell/evince-menus.ui | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
+index 11ba15ca..3888f009 100644
+--- a/shell/evince-menus.ui
++++ b/shell/evince-menus.ui
+@@ -111,6 +111,11 @@
+         <attribute name="action">win.annotate-selected-text</attribute>
+         <attribute name='hidden-when'>action-disabled</attribute>
+       </item>
++      <item>
++        <attribute name="label" translatable="yes">_Add Annotation</attribute>
++        <attribute name="action">win.add-annotation</attribute>
++        <attribute name='hidden-when'>action-disabled</attribute>
++      </item>
+       <item>
+         <attribute name="label" translatable="yes">Open Containing _Folder</attribute>
+         <attribute name="action">win.open-containing-folder</attribute>
+-- 
+2.40.1
+

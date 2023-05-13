@@ -1,0 +1,155 @@
+From 5178edc9f13e447184f72a48d687095e37691ff2 Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Fri, 12 May 2023 23:21:40 +0200
+Subject: [PATCH] add hackable keybindings
+
+---
+ shell/ev-application.c  |  2 ++
+ shell/ev-window-title.c | 18 +++++++++---------
+ shell/ev-window-title.h | 14 ++++++++++++--
+ shell/ev-window.c       | 41 ++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 63 insertions(+), 12 deletions(-)
+
+diff --git a/shell/ev-application.c b/shell/ev-application.c
+index 720fad13..2655ffc6 100644
+--- a/shell/ev-application.c
++++ b/shell/ev-application.c
+@@ -949,6 +949,8 @@ static void
+ ev_application_startup (GApplication *gapplication)
+ {
+         const gchar *action_accels[] = {
++          "win.open-notes",             "e", NULL,
++          "win.assoc",                  "<shift>A", NULL,
+           "win.open",                   "<Ctrl><shift>O", NULL,
+           "win.open-copy",              "<Ctrl><shift>N", NULL,
+           "win.save-as",                "<Ctrl>S", NULL,
+diff --git a/shell/ev-window-title.c b/shell/ev-window-title.c
+index 02bd9f1b..b5894216 100644
+--- a/shell/ev-window-title.c
++++ b/shell/ev-window-title.c
+@@ -38,15 +38,15 @@ typedef struct
+ 	const gchar *text;
+ } BadTitleEntry;
+ 
+-struct _EvWindowTitle
+-{
+-	EvWindow *window;
+-	EvWindowTitleType type;
+-	EvDocument *document;
+-	char *filename;
+-	char *doc_title;
+-	char *dirname;
+-};
++/* struct _EvWindowTitle */
++/* { */
++/* 	EvWindow *window; */
++/* 	EvWindowTitleType type; */
++/* 	EvDocument *document; */
++/* 	char *filename; */
++/* 	char *doc_title; */
++/* 	char *dirname; */
++/* }; */
+ 
+ static const BadTitleEntry bad_extensions[] = {
+ 	{ EV_BACKEND_PS, ".dvi" },
+diff --git a/shell/ev-window-title.h b/shell/ev-window-title.h
+index 1e585704..e0c2660c 100644
+--- a/shell/ev-window-title.h
++++ b/shell/ev-window-title.h
+@@ -24,8 +24,6 @@
+ 
+ G_BEGIN_DECLS
+ 
+-typedef struct _EvWindowTitle EvWindowTitle;
+-
+ typedef enum
+ {
+ 	EV_WINDOW_TITLE_DOCUMENT,
+@@ -33,6 +31,18 @@ typedef enum
+         EV_WINDOW_TITLE_RECENT
+ } EvWindowTitleType;
+ 
++struct _EvWindowTitle
++{
++	EvWindow *window;
++	EvWindowTitleType type;
++	EvDocument *document;
++	char *filename;
++	char *doc_title;
++	char *dirname;
++};
++
++typedef struct _EvWindowTitle EvWindowTitle;
++
+ EvWindowTitle *ev_window_title_new	    (EvWindow *window);
+ void	       ev_window_title_set_type     (EvWindowTitle     *window_title,
+ 					     EvWindowTitleType  type);
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index df4669a2..aa9ce72c 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -90,6 +90,9 @@
+ #include "ev-bookmarks.h"
+ #include "ev-recent-view.h"
+ #include "ev-search-box.h"
++#include "ev-window-title.h"
++
++#include <sys/wait.h>
+ 
+ #ifdef ENABLE_DBUS
+ #include "ev-gdbus-generated.h"
+@@ -664,6 +667,40 @@ ev_window_cmd_action_menubar (GSimpleAction *action,
+ 	gtk_widget_set_visible(menubar_widget, !gtk_widget_get_visible(menubar_widget));
+ }
+ 
++static void
++ev_window_cmd_assoc (GSimpleAction *action,
++			   GVariant      *parameter,
++			   gpointer       user_data)
++{
++	EvWindow *ev_window = user_data;
++	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
++
++	int pid = fork();
++	if (pid == 0) {
++		char *args[] = {"assoc", priv->title->dirname, priv->title->filename, NULL};
++		execv("/home/fabian/.local/bin/assoc-pdf-with-current-bibtex", args);
++		exit(0);
++	}
++	int status;
++	waitpid(pid, &status, 0);
++	exit(0);
++}
++
++static void
++ev_window_cmd_open_notes (GSimpleAction *action,
++			   GVariant      *parameter,
++			   gpointer       user_data)
++{
++	EvWindow *ev_window = user_data;
++	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
++
++	if (fork() == 0) {
++		char *args[] = {"open-bibtex-note-from-pdf", priv->title->filename, NULL};
++		execv("/home/fabian/.local/bin/open-bibtex-note-from-pdf", args);
++		exit(0);
++	}
++}
++
+ static void
+ set_widget_visibility (GtkWidget *widget, gboolean visible)
+ {
+@@ -6334,7 +6371,9 @@ static const GActionEntry actions[] = {
+ 	{ "open-attachment", ev_window_popup_cmd_open_attachment },
+ 	{ "save-attachment", ev_window_popup_cmd_save_attachment_as },
+ 	{ "annot-properties", ev_window_popup_cmd_annot_properties },
+-	{ "remove-annot", ev_window_popup_cmd_remove_annotation }
++	{ "remove-annot", ev_window_popup_cmd_remove_annotation },
++	{ "open-notes", ev_window_cmd_open_notes },
++	{ "assoc", ev_window_cmd_assoc },
+ };
+ 
+ static void
+-- 
+2.40.1
+

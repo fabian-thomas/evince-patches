@@ -1,0 +1,54 @@
+From dbae2e2c66537c422b3270d6f137ffd67471865b Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Sat, 11 Feb 2023 00:21:27 +0100
+Subject: [PATCH 6/6] add custom keyboard shortcuts
+
+---
+ shell/ev-application.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/shell/ev-application.c b/shell/ev-application.c
+index a5de00cd..4bb985a6 100644
+--- a/shell/ev-application.c
++++ b/shell/ev-application.c
+@@ -944,27 +944,27 @@ static void
+ ev_application_startup (GApplication *gapplication)
+ {
+         const gchar *action_accels[] = {
+-          "win.open",                   "<Ctrl>O", NULL,
+-          "win.open-copy",              "<Ctrl>N", NULL,
++          "win.open",                   "<Ctrl><shift>O", NULL,
++          "win.open-copy",              "<Ctrl><shift>N", NULL,
+           "win.save-as",                "<Ctrl>S", NULL,
+-          "win.print",                  "<Ctrl>P", NULL,
++          "win.print",                  "<Ctrl><shift>P", NULL,
+           "win.show-properties",        "<alt>Return", NULL,
+           "win.copy",                   "<Ctrl>C", "<Ctrl>Insert", NULL,
+           "win.select-all",             "<Ctrl>A", NULL,
+           "win.save-settings",          "<Ctrl>T", NULL,
+-          "win.add-bookmark",           "<Ctrl>D", NULL,
+-          "win.delete-bookmark",        "<Ctrl><Shift>D", NULL,
++          /* "win.add-bookmark",           "<Ctrl>D", NULL, */
++          /* "win.delete-bookmark",        "<Ctrl><Shift>D", NULL, */
+           "win.close",                  "<Ctrl>W", NULL,
+           "win.escape",                 "Escape", NULL,
+           "win.find",                   "<Ctrl>F", "slash", "KP_Divide", NULL,
+-          "win.find-next",              "<Ctrl>G", "F3", NULL,
+-          "win.find-previous",          "<Ctrl><Shift>G", "<Shift>F3", NULL,
++          "win.find-next",              "<Ctrl>G", "F3", "<Ctrl>n", NULL,
++          "win.find-previous",          "<Ctrl><Shift>G", "<Shift>F3", "<Ctrl>p", NULL,
+           "win.select-page",            "<Ctrl>L", NULL,
+           "win.go-backwards",           "<Shift>Page_Up", NULL,
+           "win.go-forward",             "<Shift>Page_Down", NULL,
+-          "win.go-next-page",           "n", "<Ctrl>Page_Down", NULL,
+-          "win.go-previous-page",       "p", "<Ctrl>Page_Up", NULL,
+-          "win.go-back-history",        "<alt>P", "Back", NULL,
++          "win.go-next-page",           "n", "<Ctrl>Page_Down", "<shift>j", "<ctrl>d", NULL,
++          "win.go-previous-page",       "p", "<Ctrl>Page_Up", "<shift>k", "<ctrl>u", NULL,
++          "win.go-back-history",        "<alt>P", "Back", "<ctrl>o", NULL,
+           "win.go-forward-history",     "<alt>N", "Forward", NULL,
+           "win.sizing-mode::fit-page",  "f", NULL,
+           "win.sizing-mode::fit-width", "w", NULL,
+-- 
+2.40.1
+
