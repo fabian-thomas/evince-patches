@@ -118,4 +118,5 @@ text editor and to associate a PDF with a bibtex entry.
 `sync-page.patch`
 
 This patch is not actively used by me. It shows how to add a new dbus command. In that case,
-how the active page in Evince can be changed with dbus.
+how the active page in Evince can be changed with dbus. The repo also includes a `sync-page.sh`
+script (in the `misc` dir) that shows how to execute the dbus action.
