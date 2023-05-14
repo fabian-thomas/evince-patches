@@ -1,7 +1,7 @@
 From 5178edc9f13e447184f72a48d687095e37691ff2 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:21:40 +0200
-Subject: [PATCH] add hackable keybindings
+Subject: custom-commands.patch
 
 ---
  shell/ev-application.c  |  2 ++

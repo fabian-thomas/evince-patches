@@ -1,7 +1,7 @@
 From f3f6ed03c91c0118d548d95d370a875a4ccfe4af Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 11 Feb 2023 00:20:43 +0100
-Subject: [PATCH 5/6] initially hide menu bar
+Subject: initially-hide-menu-bar.patch
 
 ---
  shell/evince-toolbar.ui | 2 +-

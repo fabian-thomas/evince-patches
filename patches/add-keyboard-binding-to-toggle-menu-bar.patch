@@ -1,7 +1,7 @@
 From e7aaab4366adcbf1c1d441672bad6af15e10b460 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 10 Feb 2023 23:42:59 +0100
-Subject: [PATCH 1/6] add keyboard binding to toggle menu bar
+Subject: add-keyboard-binding-to-toggle-menu-bar.patch
 
 ---
  shell/ev-application.c |  1 +

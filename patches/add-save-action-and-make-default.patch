@@ -1,7 +1,7 @@
 From 12a78cf4f103e79d2f3d8294c698cf7ba0515b55 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 13 May 2023 10:45:23 +0200
-Subject: [PATCH] add save action and make default
+Subject: add-save-action-and-make-default.patch
 
 ---
  shell/ev-application.c  |  3 ++-

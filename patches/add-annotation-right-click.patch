@@ -1,7 +1,7 @@
 From 7afa13497e94e87d81119f94dbb3d7a82ee5df7a Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:17:23 +0200
-Subject: [PATCH] add annotation from right click menu
+Subject: add-annotation-right-click.patch
 
 ---
  shell/evince-menus.ui | 5 +++++
