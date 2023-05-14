@@ -1,4 +1,4 @@
-# Why this fork?
+# Why?
 
 ![how evince looks without the menu bar](no-menu-bar.png)
 
@@ -10,24 +10,28 @@ some engineering.  This might be some project I will look into in the future but
 for now I came to the conclusion that Evince is just the best for me.
 
 So my goal with this repo is to make Evince behave more like Zathura.
-That is why this repo contains patches for the following changes to upstream:
+That is why this repo contains patches for the following major changes to
+upstream:
 
 - The menu bar (or toolbar) can be hidden via a keyboard shortcut. This is
   `ALT-m` or F12 by default.
-- Hide the menu bar initially.
+- Evince overwrites the pdf on hitting `CTRL+s`. By default, Evince always asks
+  for a new filename.
 - Some keyboard shortcuts are added/modified/removed. Examples are `J` and `K`
   for page up/down, or `CTRL+o` for going back in history.
+- Scripts can be launched by keybindings.
 
-All patches can be applied to your liking. And of course, you can modify the
+Note that these are just the major patches. Check the [patches section](#patches) for a list
+of all patches.
+
+You can apply only a subset of the patches, just to your liking. And of course, you can modify the
 code after applying any patches. Modifications to keyboard shortcuts can be done
 in the file `shell/ev-application.c`.
 
 You can expect me to update the patches when they are broken by upstream changes,
-at least as long as no other PDF viewer has the above mentioned feature.
-
-The full-patches branch has the code I run locally. Every patch is applied there,
-so you may just clone that branch so that you don't need to apply patches
-yourself.
+at least as long as no other PDF viewer has the above mentioned feature. I will tag
+commits with the same tags used upstream to indicate that the patches work with the
+tagged Evince version.
 
 ## Applying Patches
 
@@ -41,21 +45,14 @@ For building instructions refer to the [building section](#building).
 git clone 'https://gitlab.gnome.org/GNOME/evince'
 cd evince
 git clone 'https://github.com/fabian-thomas/cleaner-evince'
-# I suggest patching with context 0. This fixes applying some patches. 
-git am -C 0 cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
-git am -C 0 ...
-git am -C 0 ...
+git am cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
+git am ...
+git am ...
 # patch the code further (e.g., modify keybindings)
 # now build and install (see below)
 ```
 
-## Patches
-
-### Hiding the menu bar by default
-
-`initially-hide-menu-bar.patch`
-
-This patch hides the menu bar initially.
+Note: You can also use the `apply.sh` script to apply all but the sync-pages patch.
 
 ## Building
 
@@ -70,3 +67,55 @@ meson setup --prefix /usr build
 meson compile -C build
 sudo cp build/shell/evince "$(which evince)"
 ```
+
+## Patches
+
+This section lists and describes all of the available patches.
+
+### Toggle menu bar
+
+`add-keyboard-binding-to-toggle-menu-bar.patch`
+
+Adds `Alt+m` as keybinding for toggling the menu bar. Modify the binding to your
+liking.
+
+### Hide menu bar by default
+
+`initially-hide-menu-bar.patch`
+
+Hides the menu bar initially. If not used with the [toggle patch](#toggle-menu-bar),
+basically disables the menu bar.
+
+### Vim-like bindings
+
+`vim-like-bindings.patch`
+
+Adds vim-like keybindings. Modify to your liking.
+
+### Add annotation right click
+
+`add-annotation-right-click.patch`
+
+Add an annotation from the right click menu.
+
+### Save/Overwrite action + Overwrite pdf by default
+
+`add-save-action-and-make-default.patch`
+
+Add a save action to menus and use it as default on `CTRL+s`. By default, Evince always
+asks for a new filename instead of overwriting the pdf.
+
+### Launch scripts on keybinding
+
+`custom-commands.patch`
+
+This is my personal patch for launching scripts from Evince. You need to modify the patch or
+the sources after applying the patch. I use this patch to open notes for the current PDF in my
+text editor and to associate a PDF with a bibtex entry.
+
+### Change current page from dbus
+
+`sync-page.patch`
+
+This patch is not actively used by me. It shows how to add a new dbus command. In that case,
+how the active page in Evince can be changed with dbus.
