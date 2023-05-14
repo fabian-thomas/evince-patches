@@ -45,13 +45,15 @@ For building instructions refer to the [building section](#building).
 git clone 'https://gitlab.gnome.org/GNOME/evince'
 cd evince
 git clone 'https://github.com/fabian-thomas/cleaner-evince'
-git am cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
-git am ...
-git am ...
+# -C 0 helps with conflicts between the patches.
+git am -C 0 cleaner-evince/patches/add-keyboard-binding-to-toggle-menu-bar.patch
+git am -C 0 ...
+git am -C 0 ...
 # patch the code further (e.g., modify keybindings)
 # now build and install (see below)
 ```
 
+Note: Make sure to apply `0-vim-like-bindings.patch` first, since it conflicts with some patches.
 Note: You can also use the `apply.sh` script to apply all but the sync-pages patch.
 
 ## Building
@@ -88,9 +90,11 @@ basically disables the menu bar.
 
 ### Vim-like bindings
 
-`vim-like-bindings.patch`
+`0-vim-like-bindings.patch`
 
 Adds vim-like keybindings. Modify to your liking.
+
+Note: This patch should be applied first since others conflict with it.
 
 ### Add annotation right click
 
