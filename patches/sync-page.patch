@@ -1,5 +1,17 @@
+From 15ea875db3ce5ac7ed6b36718bbe10275586657f Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Sun, 14 May 2023 14:51:51 +0200
+Subject: sync-page.patch
+
+---
+ libview/ev-view.c  | 11 +++++++++++
+ libview/ev-view.h  |  3 +++
+ shell/ev-gdbus.xml |  3 +++
+ shell/ev-window.c  | 18 ++++++++++++++++++
+ 4 files changed, 35 insertions(+)
+
 diff --git a/libview/ev-view.c b/libview/ev-view.c
-index 1ffbf16b..4bfc5c35 100644
+index 294f425e..d0dbeb33 100644
 --- a/libview/ev-view.c
 +++ b/libview/ev-view.c
 @@ -9871,6 +9871,17 @@ ev_view_highlight_forward_search (EvView       *view,
@@ -49,10 +61,10 @@ index b6b50d12..df399e3f 100644
        <arg type='s' name='source_file' direction='out'/>
        <arg type='(ii)' name='source_point' direction='out'/>
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 605e5ca6..92ebf5e8 100644
+index 4d8629cd..df8ed3a3 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -7485,6 +7485,21 @@ handle_sync_view_cb (EvEvinceWindow        *object,
+@@ -7348,6 +7348,21 @@ handle_sync_view_cb (EvEvinceWindow        *object,
  
  	return TRUE;
  }
@@ -74,7 +86,7 @@ index 605e5ca6..92ebf5e8 100644
  #endif /* ENABLE_DBUS */
  
  static gboolean
-@@ -7573,6 +7588,9 @@ ev_window_init (EvWindow *ev_window)
+@@ -7435,6 +7450,9 @@ ev_window_init (EvWindow *ev_window)
  			g_signal_connect (skeleton, "handle-sync-view",
  					  G_CALLBACK (handle_sync_view_cb),
  					  ev_window);
@@ -84,3 +96,6 @@ index 605e5ca6..92ebf5e8 100644
                  } else {
                          g_printerr ("Failed to register bus object %s: %s\n",
  				    priv->dbus_object_path, error->message);
+-- 
+2.40.1
+
