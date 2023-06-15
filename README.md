@@ -42,13 +42,13 @@ order. I suggest first applying all patches, and only after that changing stuff
 in the code by hand.
 For building instructions refer to the [building section](#building).
 ``` sh
-git clone 'https://gitlab.gnome.org/GNOME/evince'
-cd evince
 git clone 'https://github.com/fabian-thomas/evince-patches'
+cd evince-patches
+git clone 'https://gitlab.gnome.org/GNOME/evince'
 # -C 0 helps with conflicts between the patches.
-git am -C 0 evince-patches/patches/add-keyboard-binding-to-toggle-menu-bar.patch
-git am -C 0 ...
-git am -C 0 ...
+git -C evince am -C 0 ../patches/add-keyboard-binding-to-toggle-menu-bar.patch
+git -C evince am -C 0 ...
+git -C evince am -C 0 ...
 # patch the code further (e.g., modify keybindings)
 # now build and install (see below)
 ```
