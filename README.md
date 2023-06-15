@@ -1,6 +1,6 @@
 # Why?
 
-![how evince looks without the menu bar](no-menu-bar.png)
+![how evince looks with the zathura like patches](zathura-like-evince.png)
 
 The selling point of Evince for me is the previewing functionality.  You can
 hover over any reference in a PDF and it will preview what is going on at the
@@ -13,6 +13,7 @@ So my goal with this repo is to make Evince behave more like Zathura.
 That is why this repo contains patches for the following major changes to
 upstream:
 
+- A (zathura-like) status bar can be included at the bottom.
 - The menu bar (or toolbar) can be hidden via a keyboard shortcut. This is
   `ALT-m` or F12 by default.
 - Evince overwrites the pdf on hitting `CTRL+s`. By default, Evince always asks
@@ -73,6 +74,13 @@ sudo cp build/shell/evince "$(which evince)"
 ## Patches
 
 This section lists and describes all of the available patches.
+
+### Status bar
+
+`zathura-like.patch`
+
+This adds a (zathura-like) status bar to the bottom of the window.
+The status bar shows both the file path and the current page.
 
 ### Toggle menu bar
 
