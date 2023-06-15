@@ -1,0 +1,421 @@
+diff --git a/shell/ev-statusbar.c b/shell/ev-statusbar.c
+new file mode 100644
+index 00000000..c3d4028f
+--- /dev/null
++++ b/shell/ev-statusbar.c
+@@ -0,0 +1,267 @@
++/* ev-statusbar.c
++ *  this file is part of evince, a gnome document viewer
++ *
++ * Copyright (C) 2012-2014 Carlos Garcia Campos <carlosgc@gnome.org>
++ * Copyright (C) 2014-2018 Germán Poo-Caamaño <gpoo@gnome.org>
++ *
++ * Evince is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Evince is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <glib/gi18n.h>
++
++#include "ev-statusbar.h"
++
++enum
++{
++        PROP_0,
++        PROP_WINDOW
++};
++
++typedef struct {
++        EvWindow        *window;
++        EvDocument      *document;
++        EvDocumentModel *doc_model;
++
++        gulong           signal_id;
++        gulong           notify_document_signal_id;
++
++        GtkWidget       *title_label;
++        GtkWidget       *page_label;
++        GtkWidget       *horizontal_box;
++} EvStatusbarPrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (EvStatusbar, ev_statusbar, GTK_TYPE_BIN)
++
++#define GET_PRIVATE(o) ev_statusbar_get_instance_private (o)
++
++static void
++ev_statusbar_set_property (GObject      *object,
++                           guint         prop_id,
++                           const GValue *value,
++                           GParamSpec   *pspec)
++{
++        EvStatusbar *ev_statusbar = EV_STATUSBAR (object);
++        EvStatusbarPrivate *priv = GET_PRIVATE (ev_statusbar);
++
++        switch (prop_id) {
++        case PROP_WINDOW:
++                priv->window = g_value_get_object (value);
++                break;
++        default:
++                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
++        }
++}
++
++static void
++ev_statusbar_constructed (GObject *object)
++{
++        EvStatusbar      *ev_statusbar = EV_STATUSBAR (object);
++        EvStatusbarPrivate *priv = GET_PRIVATE (ev_statusbar);
++
++        ev_statusbar_set_model (EV_STATUSBAR(ev_statusbar),
++                                   ev_window_get_document_model (priv->window));
++
++        /* Set color of status bar. */
++        GdkRGBA color;
++        gdk_rgba_parse(&color, "#1c1c1c");
++        gtk_widget_override_background_color(priv->horizontal_box, GTK_STATE_FLAG_NORMAL, &color);
++
++        /* Not sure if this is needed. */
++        gtk_widget_set_sensitive (priv->title_label, FALSE);
++        gtk_widget_set_sensitive (priv->page_label, FALSE);
++
++        /* Set mono font. */
++        PangoFontDescription *mono_font = pango_font_description_from_string("9");
++        pango_font_description_set_family(mono_font, "Monospace");
++        gtk_widget_override_font(priv->title_label, mono_font);
++        gtk_widget_override_font(priv->page_label, mono_font);
++
++        /* Set foreground to white. */
++        GdkRGBA white = { 1.0, 1.0, 1.0, 1.0 };
++        gtk_widget_override_color(priv->title_label, GTK_STATE_FLAG_NORMAL, &white);
++        gtk_widget_override_color(priv->page_label, GTK_STATE_FLAG_NORMAL, &white);
++
++        /* Make these visible after setting label. */
++        gtk_widget_show (priv->page_label);
++        gtk_widget_show (priv->title_label);
++}
++
++static void
++update_labels (EvStatusbar *status_bar,
++               gint         page)
++{
++        EvStatusbarPrivate *priv = GET_PRIVATE (status_bar);
++
++        gchar* title = g_filename_from_uri (ev_document_get_uri (priv->document), NULL, NULL);
++        gtk_label_set_text (GTK_LABEL (priv->title_label), title);
++        g_free (title);
++
++        gint n_pages = ev_document_get_n_pages (priv->document);
++        gchar* pages = g_strdup_printf (_("[%d/%d]"), page + 1, n_pages);
++        gtk_label_set_text (GTK_LABEL (priv->page_label), pages);
++        g_free (pages);
++}
++
++static void
++ev_statusbar_set_current_page (EvStatusbar *status_bar,
++                               gint         page)
++{
++        update_labels (status_bar, page);
++}
++
++static void
++page_changed_cb (EvDocumentModel *model,
++                 gint             old_page,
++                 gint             new_page,
++                 EvStatusbar     *status_bar)
++{
++        ev_statusbar_set_current_page (status_bar, new_page);
++}
++
++static void
++ev_statusbar_set_document (EvStatusbar *status_bar,
++                           EvDocument  *document)
++{
++        EvStatusbarPrivate *priv = GET_PRIVATE (status_bar);
++
++        if (document) {
++                g_object_ref (document);
++                gtk_widget_set_sensitive (GTK_WIDGET (status_bar), ev_document_get_n_pages (document) > 0);
++        }
++
++        if (priv->signal_id > 0) {
++                if (priv->doc_model != NULL) {
++                        g_signal_handler_disconnect (priv->doc_model,
++                                                     priv->signal_id);
++                }
++                priv->signal_id = 0;
++        }
++
++        if (priv->document)
++                g_object_unref (priv->document);
++        priv->document = document;
++        if (!priv->document)
++                return;
++
++        priv->signal_id =
++                g_signal_connect (priv->doc_model,
++                                  "page-changed",
++                                  G_CALLBACK (page_changed_cb),
++                                  status_bar);
++
++        ev_statusbar_set_current_page (status_bar, ev_document_model_get_page (priv->doc_model));
++}
++
++static void
++ev_statusbar_document_changed_cb (EvDocumentModel *model,
++                                  GParamSpec      *pspec,
++                                  EvStatusbar     *status_bar)
++{
++        ev_statusbar_set_document (status_bar, ev_document_model_get_document (model));
++}
++
++void
++ev_statusbar_set_model (EvStatusbar     *status_bar,
++                        EvDocumentModel *model)
++{
++        EvStatusbarPrivate *priv = GET_PRIVATE (status_bar);
++
++        if (priv->doc_model) {
++                g_object_remove_weak_pointer (G_OBJECT (priv->doc_model),
++                                              (gpointer)&priv->doc_model);
++        }
++        priv->doc_model = model;
++        g_object_add_weak_pointer (G_OBJECT (model),
++                                   (gpointer)&priv->doc_model);
++
++        ev_statusbar_set_document (status_bar, ev_document_model_get_document (model));
++
++        priv->notify_document_signal_id =
++                g_signal_connect (model, "notify::document",
++                                  G_CALLBACK (ev_statusbar_document_changed_cb),
++                                  status_bar);
++}
++
++static void
++ev_statusbar_finalize (GObject *object)
++{
++        EvStatusbar *status_bar = EV_STATUSBAR (object);
++        EvStatusbarPrivate *priv = GET_PRIVATE (status_bar);
++
++        if (priv->doc_model != NULL) {
++                if (priv->signal_id > 0) {
++                        g_signal_handler_disconnect (priv->doc_model,
++                                                     priv->signal_id);
++                        priv->signal_id = 0;
++                }
++                if (priv->notify_document_signal_id > 0) {
++                        g_signal_handler_disconnect (priv->doc_model,
++                                                     priv->notify_document_signal_id);
++                        priv->notify_document_signal_id = 0;
++                }
++                g_object_remove_weak_pointer (G_OBJECT (priv->doc_model),
++                                              (gpointer)&priv->doc_model);
++                priv->doc_model = NULL;
++        }
++
++        ev_statusbar_set_document (status_bar, NULL);
++}
++
++static void
++ev_statusbar_class_init (EvStatusbarClass *klass)
++{
++        GObjectClass *g_object_class = G_OBJECT_CLASS (klass);
++        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
++
++        g_object_class->set_property = ev_statusbar_set_property;
++        g_object_class->constructed = ev_statusbar_constructed;
++
++        gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/evince/ui/ev-statusbar.ui");
++        gtk_widget_class_bind_template_child_private (widget_class, EvStatusbar, title_label);
++        gtk_widget_class_bind_template_child_private (widget_class, EvStatusbar, page_label);
++        gtk_widget_class_bind_template_child_private (widget_class, EvStatusbar, horizontal_box);
++
++        g_object_class_install_property (g_object_class,
++                                         PROP_WINDOW,
++                                         g_param_spec_object ("window",
++                                                              "Window",
++                                                              "The evince window",
++                                                              EV_TYPE_WINDOW,
++                                                              G_PARAM_WRITABLE |
++                                                              G_PARAM_CONSTRUCT_ONLY |
++                                                              G_PARAM_STATIC_STRINGS));
++
++        g_object_class->finalize = ev_statusbar_finalize;
++}
++
++static void
++ev_statusbar_init (EvStatusbar *ev_statusbar)
++{
++        gtk_widget_init_template (GTK_WIDGET (ev_statusbar));
++}
++
++GtkWidget *
++ev_statusbar_new (EvWindow *window)
++{
++        g_return_val_if_fail (EV_IS_WINDOW (window), NULL);
++
++        return GTK_WIDGET (g_object_new (EV_TYPE_STATUSBAR,
++                                         "window", window,
++                                         NULL));
++}
+diff --git a/shell/ev-statusbar.h b/shell/ev-statusbar.h
+new file mode 100644
+index 00000000..f33bae48
+--- /dev/null
++++ b/shell/ev-statusbar.h
+@@ -0,0 +1,53 @@
++/* ev-statusbar.h
++ *  this file is part of evince, a gnome document viewer
++ *
++ * Copyright (C) 2012 Carlos Garcia Campos <carlosgc@gnome.org>
++ *
++ * Evince is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Evince is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
++ */
++
++#pragma once
++
++#include <gtk/gtk.h>
++#include "ev-window.h"
++
++G_BEGIN_DECLS
++
++#define EV_TYPE_STATUSBAR              (ev_statusbar_get_type())
++#define EV_STATUSBAR(object)           (G_TYPE_CHECK_INSTANCE_CAST((object), EV_TYPE_STATUSBAR, EvStatusbar))
++#define EV_IS_STATUSBAR(object)        (G_TYPE_CHECK_INSTANCE_TYPE((object), EV_TYPE_STATUSBAR))
++#define EV_STATUSBAR_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), EV_TYPE_STATUSBAR, EvStatusbarClass))
++#define EV_IS_STATUSBAR_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE((klass), EV_TYPE_STATUSBAR))
++#define EV_STATUSBAR_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS((object), EV_TYPE_STATUSBAR, EvStatusbarClass))
++
++typedef struct _EvStatusbar        EvStatusbar;
++typedef struct _EvStatusbarClass   EvStatusbarClass;
++
++struct _EvStatusbar {
++        GtkBin base_instance;
++};
++
++struct _EvStatusbarClass {
++        GtkBinClass base_class;
++};
++
++GType         ev_statusbar_get_type          (void);
++GtkWidget    *ev_statusbar_new               (EvWindow *window);
++HdyHeaderBar *ev_statusbar_get_header_bar    (EvStatusbar *ev_toolbar);
++GType         ev_statusbar_get_type          (void) G_GNUC_CONST;
++void          ev_statusbar_set_model         (EvStatusbar *statusbar,
++                                              EvDocumentModel    *doc_model);
++
++G_END_DECLS
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index 5aecffb1..d424fb08 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -87,6 +87,7 @@
+ #include "ev-annotation-properties-dialog.h"
+ #include "ev-zoom-action.h"
+ #include "ev-toolbar.h"
++#include "ev-statusbar.h"
+ #include "ev-bookmarks.h"
+ #include "ev-recent-view.h"
+ #include "ev-search-box.h"
+@@ -138,6 +139,7 @@ typedef struct {
+ 
+ 	GtkWidget *main_box;
+ 	GtkWidget *toolbar;
++	GtkWidget *statusbar;
+ 	GtkWidget *hpaned;
+ 	GtkWidget *view_box;
+ 	GtkWidget *sidebar;
+@@ -7621,6 +7623,15 @@ ev_window_init (EvWindow *ev_window)
+ 			 priv->sidebar, FALSE, FALSE);
+ 	gtk_widget_show (priv->sidebar);
+ 
++	/* Init status bar (bottom bar) and show. */
++	priv->statusbar = ev_statusbar_new (ev_window);
++	gtk_widget_set_no_show_all (priv->statusbar, TRUE);
++	gtk_box_pack_start (GTK_BOX (priv->main_box), priv->statusbar, FALSE, TRUE, 0);
++	gtk_widget_show (priv->statusbar);
++
++	/* Disable decorations. This removes small borders around the window on minimal WMs as well. */
++	gtk_window_set_decorated(GTK_WINDOW(ev_window), FALSE);
++
+ 	/* Stub sidebar, for now */
+ 
+ 	sidebar_widget = ev_sidebar_thumbnails_new ();
+diff --git a/shell/evince-statusbar.ui b/shell/evince-statusbar.ui
+new file mode 100644
+index 00000000..618f9681
+--- /dev/null
++++ b/shell/evince-statusbar.ui
+@@ -0,0 +1,23 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<interface>
++  <template class="EvStatusbar" parent="GtkBin">
++      <child>
++        <object class="GtkBox" id="horizontal_box">
++          <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
++          <property name="visible">True</property>
++          <child>
++            <object class="GtkLabel" id="title_label"/>
++            <packing>
++              <property name="pack-type">start</property>
++            </packing>
++          </child>
++          <child>
++            <object class="GtkLabel" id="page_label"/>
++            <packing>
++              <property name="pack-type">end</property>
++            </packing>
++          </child>
++        </object>
++      </child>
++  </template>
++</interface>
+diff --git a/shell/evince.gresource.xml b/shell/evince.gresource.xml
+index 189f5b9b..ceb715cf 100644
+--- a/shell/evince.gresource.xml
++++ b/shell/evince.gresource.xml
+@@ -29,6 +29,7 @@
+     <file alias="ui/sidebar.ui" compressed="true" preprocess="xml-stripblanks">evince-sidebar.ui</file>
+     <file alias="ui/sidebar-bookmarks.ui" compressed="true" preprocess="xml-stripblanks">evince-sidebar-bookmarks.ui</file>
+     <file alias="ui/ev-toolbar.ui" compressed="true" preprocess="xml-stripblanks">evince-toolbar.ui</file>
++    <file alias="ui/ev-statusbar.ui" compressed="true" preprocess="xml-stripblanks">evince-statusbar.ui</file>
+     <file alias="ui/zoom-action.ui" compressed="true" preprocess="xml-stripblanks">evince-zoom-action.ui</file>
+   </gresource>
+ </gresources>
+diff --git a/shell/meson.build b/shell/meson.build
+index f72a671a..c53e5b22 100644
+--- a/shell/meson.build
++++ b/shell/meson.build
+@@ -17,6 +17,7 @@ evince_sources = files(
+   'ev-properties-license.c',
+   'ev-recent-view.c',
+   'ev-toolbar.c',
++  'ev-statusbar.c',
+   'ev-utils.c',
+   'ev-window.c',
+   'ev-window-title.c',
