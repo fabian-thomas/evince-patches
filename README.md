@@ -1,6 +1,6 @@
-# Why?
-
 ![how evince looks with the zathura like patches](zathura-like-evince.png)
+
+# Why?
 
 The selling point of Evince for me is the previewing functionality.  You can
 hover over any reference in a PDF and it will preview what is going on at the
