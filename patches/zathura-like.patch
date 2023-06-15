@@ -1,3 +1,20 @@
+From 232ba58b7fc4490e33cc552fe59dbecd6e8ac505 Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Thu, 15 Jun 2023 14:58:46 +0200
+Subject: zathura-like.patch
+
+---
+ shell/ev-statusbar.c       | 267 +++++++++++++++++++++++++++++++++++++
+ shell/ev-statusbar.h       |  53 ++++++++
+ shell/ev-window.c          |  11 ++
+ shell/evince-statusbar.ui  |  23 ++++
+ shell/evince.gresource.xml |   1 +
+ shell/meson.build          |   1 +
+ 6 files changed, 356 insertions(+)
+ create mode 100644 shell/ev-statusbar.c
+ create mode 100644 shell/ev-statusbar.h
+ create mode 100644 shell/evince-statusbar.ui
+
 diff --git a/shell/ev-statusbar.c b/shell/ev-statusbar.c
 new file mode 100644
 index 00000000..c3d4028f
@@ -419,3 +436,6 @@ index f72a671a..c53e5b22 100644
    'ev-utils.c',
    'ev-window.c',
    'ev-window-title.c',
+-- 
+2.41.0
+
