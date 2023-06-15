@@ -46,7 +46,7 @@ git clone 'https://github.com/fabian-thomas/evince-patches'
 cd evince-patches
 git clone 'https://gitlab.gnome.org/GNOME/evince'
 # -C 0 helps with conflicts between the patches.
-git -C evince am -C 0 ../patches/add-keyboard-binding-to-toggle-menu-bar.patch
+git -C evince am -C 0 ../patches/0-vim-like-bindings.patch
 git -C evince am -C 0 ...
 git -C evince am -C 0 ...
 # patch the code further (e.g., modify keybindings)
