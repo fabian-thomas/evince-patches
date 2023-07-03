@@ -1,0 +1,87 @@
+From 89c60fe29876dd202695d6883af75b03590d3d2f Mon Sep 17 00:00:00 2001
+From: Fabian Thomas <fabian@fabianthomas.de>
+Date: Mon, 3 Jul 2023 19:52:17 +0200
+Subject: [PATCH] Add web search action
+
+---
+ shell/ev-window.c     | 34 ++++++++++++++++++++++++++++++++++
+ shell/evince-menus.ui |  4 ++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index 5f39a884..8dafb548 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -78,6 +78,7 @@
+ #include "ev-utils.h"
+ #include "ev-keyring.h"
+ #include "ev-view.h"
++#include "ev-view-private.h"
+ #include "ev-view-presentation.h"
+ #include "ev-view-type-builtins.h"
+ #include "ev-window.h"
+@@ -6098,6 +6099,38 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
+ 	ev_window_begin_add_annot (ev_window, EV_ANNOTATION_TYPE_TEXT);
+ }
+ 
++static void
++ev_window_cmd_web_search (GSimpleAction *action,
++			 GVariant      *parameter,
++			 gpointer       user_data)
++{
++	EvWindow *ev_window = user_data;
++	EvWindowPrivate *priv = GET_PRIVATE (ev_window);
++	EvView* ev_view = EV_VIEW (priv->view);
++
++	if (!EV_IS_SELECTION (ev_view->document))
++		return;
++
++	char* text = ev_view_get_selected_text (ev_view);
++
++	// In the format https://domain.org?query=%s
++	const char* search_engine = getenv("SEARCH_ENGINE");
++	char* url = g_strdup_printf(search_engine, text);
++
++	const char* xdg_open_command = getenv("XDG_OPEN");
++	if (xdg_open_command) {
++		// TODO: --
++		char* command = g_strdup_printf("%s '%s'", xdg_open_command, url);
++		int _ = system(command);
++		g_free (command);
++	} else {
++		gtk_show_uri(NULL, url, GDK_CURRENT_TIME, NULL);
++	}
++
++	g_free (text);
++	g_free (url);
++}
++
+ static void
+ ev_window_cmd_toggle_edit_annots (GSimpleAction *action,
+ 				  GVariant      *state,
+@@ -6384,6 +6417,7 @@ static const GActionEntry actions[] = {
+ 	{ "toggle-menubar", ev_window_cmd_action_menubar },
+ 	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
+ 	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
++	{ "web-search", ev_window_cmd_web_search },
+ 	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
+ 	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
+ 	{ "about", ev_window_cmd_about },
+diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
+index 3888f009..0367a992 100644
+--- a/shell/evince-menus.ui
++++ b/shell/evince-menus.ui
+@@ -60,6 +60,10 @@
+       </item>
+     </section>
+     <section>
++      <item>
++        <attribute name="label" translatable="yes">_Search in Web</attribute>
++        <attribute name="action">win.web-search</attribute>
++      </item>
+       <item>
+         <attribute name="label" translatable="yes">_Copy</attribute>
+         <attribute name="action">win.copy</attribute>
+-- 
+2.41.0
+
