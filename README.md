@@ -125,6 +125,15 @@ This is my personal patch for launching scripts from Evince. You need to modify 
 the sources after applying the patch. I use this patch to open notes for the current PDF in my
 text editor and to associate a PDF with a bibtex entry.
 
+### Web search from selection
+
+`add-web-search-action.patch`
+
+This patch adds an action to the context menu that performs a web search with the current text selection.
+The environment variable `SEARCH_ENGINE` specifies which search engine in the format `https://domain.org?query=%s` (the `%s` is replaced by the selected text).
+`XDG_OPEN` specifies which binary/script should be used to open the link.
+If this environment variable is unset, the default `xdg-open` handler is used.
+
 ### Change current page from dbus
 
 `sync-page.patch`

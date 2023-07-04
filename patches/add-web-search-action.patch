@@ -1,15 +1,15 @@
-From 89c60fe29876dd202695d6883af75b03590d3d2f Mon Sep 17 00:00:00 2001
+From e5375d8f76516aa6ac3e63f43d281ec6805c3a5d Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
-Date: Mon, 3 Jul 2023 19:52:17 +0200
+Date: Tue, 4 Jul 2023 15:41:29 +0200
 Subject: [PATCH] Add web search action
 
 ---
- shell/ev-window.c     | 34 ++++++++++++++++++++++++++++++++++
+ shell/ev-window.c     | 37 +++++++++++++++++++++++++++++++++++++
  shell/evince-menus.ui |  4 ++++
- 2 files changed, 38 insertions(+)
+ 2 files changed, 41 insertions(+)
 
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 5f39a884..8dafb548 100644
+index 5f39a884..fe9d3607 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -78,6 +78,7 @@
@@ -20,7 +20,7 @@ index 5f39a884..8dafb548 100644
  #include "ev-view-presentation.h"
  #include "ev-view-type-builtins.h"
  #include "ev-window.h"
-@@ -6098,6 +6099,38 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
+@@ -6098,6 +6099,41 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
  	ev_window_begin_add_annot (ev_window, EV_ANNOTATION_TYPE_TEXT);
  }
  
@@ -44,10 +44,13 @@ index 5f39a884..8dafb548 100644
 +
 +	const char* xdg_open_command = getenv("XDG_OPEN");
 +	if (xdg_open_command) {
-+		// TODO: --
-+		char* command = g_strdup_printf("%s '%s'", xdg_open_command, url);
-+		int _ = system(command);
-+		g_free (command);
++		pid_t pid = fork();
++		if (pid == -1) {
++			return;
++		} else if (pid == 0) {
++			execlp(xdg_open_command, xdg_open_command, "--", url, NULL);
++			return;
++		}
 +	} else {
 +		gtk_show_uri(NULL, url, GDK_CURRENT_TIME, NULL);
 +	}
@@ -59,7 +62,7 @@ index 5f39a884..8dafb548 100644
  static void
  ev_window_cmd_toggle_edit_annots (GSimpleAction *action,
  				  GVariant      *state,
-@@ -6384,6 +6417,7 @@ static const GActionEntry actions[] = {
+@@ -6384,6 +6420,7 @@ static const GActionEntry actions[] = {
  	{ "toggle-menubar", ev_window_cmd_action_menubar },
  	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
  	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
