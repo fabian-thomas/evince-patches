@@ -66,10 +66,10 @@ index 5f39a884..fe9d3607 100644
  	{ "toggle-menubar", ev_window_cmd_action_menubar },
  	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
  	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
-+	{ "web-search", ev_window_cmd_web_search },
  	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
  	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
  	{ "about", ev_window_cmd_about },
++	{ "web-search", ev_window_cmd_web_search },
 diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
 index 3888f009..0367a992 100644
 --- a/shell/evince-menus.ui

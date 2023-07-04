@@ -30,12 +30,11 @@ diff --git a/shell/ev-window.c b/shell/ev-window.c
 index 8dafb548..2d32874d 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -6416,7 +6416,7 @@ static const GActionEntry actions[] = {
+@@ -6416,6 +6416,6 @@ static const GActionEntry actions[] = {
  	{ "toggle-menu", ev_window_cmd_action_menu },
  	{ "toggle-menubar", ev_window_cmd_action_menubar },
  	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
 -	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
 +	{ "add-annotation", ev_window_cmd_add_annotation },
- 	{ "web-search", ev_window_cmd_web_search },
  	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
  	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
