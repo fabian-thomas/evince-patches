@@ -5,13 +5,13 @@ Subject: 0-vim-like-bindings.patch
 
 ---
  shell/ev-application.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index 980a3641..256372fd 100644
+index ac60e47f..f19b758c 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -949,27 +949,27 @@ static void
+@@ -813,26 +813,26 @@ static void
  ev_application_startup (GApplication *gapplication)
  {
          const gchar *action_accels[] = {
@@ -25,7 +25,6 @@ index 980a3641..256372fd 100644
            "win.show-properties",        "<alt>Return", NULL,
            "win.copy",                   "<Ctrl>C", "<Ctrl>Insert", NULL,
            "win.select-all",             "<Ctrl>A", NULL,
-           "win.save-settings",          "<Ctrl>T", NULL,
 -          "win.add-bookmark",           "<Ctrl>D", NULL,
 -          "win.delete-bookmark",        "<Ctrl><Shift>D", NULL,
 +          /* "win.add-bookmark",           "<Ctrl>D", NULL, */
@@ -49,7 +48,7 @@ index 980a3641..256372fd 100644
            "win.go-forward-history",     "<alt>N", "Forward", NULL,
            "win.sizing-mode::fit-page",  "f", NULL,
            "win.sizing-mode::fit-width", "w", NULL,
-@@ -979,7 +979,8 @@ ev_application_startup (GApplication *gapplication)
+@@ -842,7 +842,8 @@ ev_application_startup (GApplication *gapplication)
            "win.caret-navigation",       "F7", NULL,
            "win.zoom-in",                "plus", "<Ctrl>plus", "KP_Add", "<Ctrl>KP_Add", "equal", "<Ctrl>equal", NULL,
            "win.zoom-out",               "minus", "<Ctrl>minus", "KP_Subtract", "<Ctrl>KP_Subtract", NULL,
