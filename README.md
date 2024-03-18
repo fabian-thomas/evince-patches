@@ -34,7 +34,11 @@ at least as long as no other PDF viewer has the above mentioned feature. I will 
 commits with the same tags used upstream to indicate that the patches work with the
 tagged Evince version.
 
-NOTE: For an easy installation check out the [section about Nix/NixOS](#nix).
+## Installation
+
+For an easy installation check out the [section about Nix/NixOS](#nix).
+Otherwise you have to build the package for your system or copy over the built binary.
+Instructions below.
 
 ## Applying Patches
 
