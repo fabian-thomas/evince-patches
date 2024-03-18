@@ -1,4 +1,4 @@
-From e5375d8f76516aa6ac3e63f43d281ec6805c3a5d Mon Sep 17 00:00:00 2001
+From 2db8561f5749e8243067598d58586af9e8191239 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Tue, 4 Jul 2023 15:41:29 +0200
 Subject: [PATCH] Add web search action
@@ -9,7 +9,7 @@ Subject: [PATCH] Add web search action
  2 files changed, 41 insertions(+)
 
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 5f39a884..fe9d3607 100644
+index d8970e33..d0b6663e 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -78,6 +78,7 @@
@@ -20,7 +20,7 @@ index 5f39a884..fe9d3607 100644
  #include "ev-view-presentation.h"
  #include "ev-view-type-builtins.h"
  #include "ev-window.h"
-@@ -6098,6 +6099,41 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
+@@ -6065,6 +6066,41 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
  	ev_window_begin_add_annot (ev_window, EV_ANNOTATION_TYPE_TEXT);
  }
  
@@ -62,16 +62,16 @@ index 5f39a884..fe9d3607 100644
  static void
  ev_window_cmd_toggle_edit_annots (GSimpleAction *action,
  				  GVariant      *state,
-@@ -6384,6 +6420,7 @@ static const GActionEntry actions[] = {
- 	{ "toggle-menubar", ev_window_cmd_action_menubar },
- 	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
- 	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
- 	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
+@@ -6330,6 +6366,7 @@ static const GActionEntry actions[] = {
+ 	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
  	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
  	{ "about", ev_window_cmd_about },
 +	{ "web-search", ev_window_cmd_web_search },
+ 	{ "help", ev_window_cmd_help },
+ 	/* Popups specific items */
+ 	{ "open-link", ev_window_popup_cmd_open_link },
 diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
-index 3888f009..0367a992 100644
+index e22f3141..56c0ce99 100644
 --- a/shell/evince-menus.ui
 +++ b/shell/evince-menus.ui
 @@ -60,6 +60,10 @@
@@ -86,5 +86,5 @@ index 3888f009..0367a992 100644
          <attribute name="label" translatable="yes">_Copy</attribute>
          <attribute name="action">win.copy</attribute>
 -- 
-2.41.0
+2.44.0
 
