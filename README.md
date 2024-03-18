@@ -34,6 +34,8 @@ at least as long as no other PDF viewer has the above mentioned feature. I will 
 commits with the same tags used upstream to indicate that the patches work with the
 tagged Evince version.
 
+NOTE: For an easy installation check out the [section about Nix/NixOS](#nix).
+
 ## Applying Patches
 
 First you need to get the latest evince code. Then you need to clone this patches
@@ -141,3 +143,19 @@ If this environment variable is unset, the default `xdg-open` handler is used.
 This patch is not actively used by me. It shows how to add a new dbus command. In that case,
 how the active page in Evince can be changed with dbus. The repo also includes a `sync-page.sh`
 script (in the `misc` dir) that shows how to execute the dbus action.
+
+## Nix
+
+Test it out without installation:
+```
+nix run github:fabian-thomas/evince-patches
+```
+
+Install it permanently:
+```
+nix profile install github:fabian-thomas/evince-patches
+```
+
+### NixOS
+
+On NixOS you can just include the `overlay.nix` in your [overlays](https://nixos.wiki/wiki/Overlays) or just install the flake.
