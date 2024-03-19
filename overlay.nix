@@ -2,18 +2,16 @@
   evince = prev.evince.overrideAttrs (old: rec {
     version = old.version + "-patched";
 
-    patchesSrc = ./patches;
-
     patches = (old.patches or []) ++ [
-      "${patchesSrc}/0-vim-like-bindings.patch"
-      "${patchesSrc}/add-annotation-right-click.patch"
-      "${patchesSrc}/add-keyboard-binding-to-toggle-menu-bar.patch"
-      "${patchesSrc}/add-save-action-and-make-default.patch"
-      "${patchesSrc}/add-web-search-action.patch"
-      "${patchesSrc}/custom-commands.patch"
-      "${patchesSrc}/initially-hide-menu-bar.patch"
-      # "${patchesSrc}/sync-page.patch"
-      "${patchesSrc}/zathura-like.patch"
+      ./patches/0-vim-like-bindings.patch
+      ./patches/add-annotation-right-click.patch
+      ./patches/add-keyboard-binding-to-toggle-menu-bar.patch
+      ./patches/add-save-action-and-make-default.patch
+      ./patches/add-web-search-action.patch
+      ./patches/custom-commands.patch
+      ./patches/initially-hide-menu-bar.patch
+      # ./patches/sync-page.patch
+      ./patches/zathura-like.patch
     ];
 
     # If applying the patches fails try with a higher fuzz value
