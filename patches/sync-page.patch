@@ -1,4 +1,4 @@
-From 84f864eed232944c09e5448b8135749ee16b780d Mon Sep 17 00:00:00 2001
+From 9d8980a436b5d8f03ef1b1f944fec5f51e1d175d Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sun, 14 May 2023 14:51:51 +0200
 Subject: sync-page.patch
@@ -61,10 +61,10 @@ index b6b50d12..df399e3f 100644
        <arg type='s' name='source_file' direction='out'/>
        <arg type='(ii)' name='source_point' direction='out'/>
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index d8970e33..43adc2f4 100644
+index c17ac0c3..a4357549 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -7357,6 +7357,21 @@ handle_sync_view_cb (EvEvinceWindow        *object,
+@@ -7472,6 +7472,21 @@ handle_sync_view_cb (EvEvinceWindow        *object,
  
  	return TRUE;
  }
@@ -86,7 +86,7 @@ index d8970e33..43adc2f4 100644
  #endif /* ENABLE_DBUS */
  
  static gboolean
-@@ -7444,6 +7459,9 @@ ev_window_init (EvWindow *ev_window)
+@@ -7559,6 +7574,9 @@ ev_window_init (EvWindow *ev_window)
  			g_signal_connect (skeleton, "handle-sync-view",
  					  G_CALLBACK (handle_sync_view_cb),
  					  ev_window);

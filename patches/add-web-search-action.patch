@@ -1,4 +1,4 @@
-From 46e160202a90414ef0de029431cabb98b5c6bcee Mon Sep 17 00:00:00 2001
+From 9c111532b7b31db3d1a1f4866f0a67f5e7f15c1b Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Tue, 4 Jul 2023 15:41:29 +0200
 Subject: add-web-search-action.patch
@@ -9,7 +9,7 @@ Subject: add-web-search-action.patch
  2 files changed, 41 insertions(+)
 
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index d8970e33..d0b6663e 100644
+index e25e5443..6634dc0e 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -78,6 +78,7 @@
@@ -20,7 +20,7 @@ index d8970e33..d0b6663e 100644
  #include "ev-view-presentation.h"
  #include "ev-view-type-builtins.h"
  #include "ev-window.h"
-@@ -6065,6 +6066,41 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
+@@ -6102,6 +6103,41 @@ ev_window_cmd_add_annotation (GSimpleAction *action,
  	ev_window_begin_add_annot (ev_window, EV_ANNOTATION_TYPE_TEXT);
  }
  
@@ -62,7 +62,7 @@ index d8970e33..d0b6663e 100644
  static void
  ev_window_cmd_toggle_edit_annots (GSimpleAction *action,
  				  GVariant      *state,
-@@ -6330,6 +6366,7 @@ static const GActionEntry actions[] = {
+@@ -6369,6 +6405,7 @@ static const GActionEntry actions[] = {
  	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
  	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
  	{ "about", ev_window_cmd_about },
@@ -71,7 +71,7 @@ index d8970e33..d0b6663e 100644
  	/* Popups specific items */
  	{ "open-link", ev_window_popup_cmd_open_link },
 diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
-index e22f3141..56c0ce99 100644
+index c2ba90b2..64354ca0 100644
 --- a/shell/evince-menus.ui
 +++ b/shell/evince-menus.ui
 @@ -60,6 +60,10 @@

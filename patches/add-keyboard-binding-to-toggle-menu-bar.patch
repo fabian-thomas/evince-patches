@@ -1,4 +1,4 @@
-From 42c5287221309b42a0f11babdb3e239c9933544a Mon Sep 17 00:00:00 2001
+From ccc8cd2d460fdddaeee171004209d4a44a60eebb Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 10 Feb 2023 23:42:59 +0100
 Subject: add-keyboard-binding-to-toggle-menu-bar.patch
@@ -9,7 +9,7 @@ Subject: add-keyboard-binding-to-toggle-menu-bar.patch
  2 files changed, 14 insertions(+)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index ac60e47f..ae812bc8 100644
+index f19b758c..39dfe1f7 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
 @@ -839,6 +839,7 @@ ev_application_startup (GApplication *gapplication)
@@ -21,7 +21,7 @@ index ac60e47f..ae812bc8 100644
            "win.zoom-in",                "plus", "<Ctrl>plus", "KP_Add", "<Ctrl>KP_Add", "equal", "<Ctrl>equal", NULL,
            "win.zoom-out",               "minus", "<Ctrl>minus", "KP_Subtract", "<Ctrl>KP_Subtract", NULL,
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index d8970e33..801b4952 100644
+index 473933f9..2ed77763 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -642,6 +642,18 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
@@ -49,7 +49,7 @@ index d8970e33..801b4952 100644
  	{ "toggle-menu", ev_window_cmd_action_menu },
 +	{ "toggle-menubar", ev_window_cmd_action_menubar },
  	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
- 	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
+ 	{ "add-annotation", ev_window_cmd_add_annotation },
  	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
 -- 
 2.44.0

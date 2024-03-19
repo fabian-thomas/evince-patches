@@ -10,7 +10,7 @@ cd evince || exit 1
 for patch in ../patches/*; do
     git am -3 -C 0 "$patch"
     git format-patch HEAD^ --stdout > "$patch"
-    git reset --hard HEAD^
+    # git reset --hard HEAD^
 done
 cd .. || exit 1
 ./misc/fix-patch-subject.sh

@@ -1,4 +1,4 @@
-From 54849b0749894512a9c1a81242b90402ad6be6e5 Mon Sep 17 00:00:00 2001
+From d199d2923bf82c5cc1ac35bf578bde3a30401f2f Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 13 May 2023 10:45:23 +0200
 Subject: add-save-action-and-make-default.patch
@@ -10,24 +10,24 @@ Subject: add-save-action-and-make-default.patch
  3 files changed, 38 insertions(+), 7 deletions(-)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index ac60e47f..d05d11ed 100644
+index 39dfe1f7..6cd80101 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
 @@ -815,7 +815,8 @@ ev_application_startup (GApplication *gapplication)
          const gchar *action_accels[] = {
-           "win.open",                   "<Ctrl>O", NULL,
-           "win.open-copy",              "<Ctrl>N", NULL,
+           "win.open",                   "<Ctrl><shift>O", NULL,
+           "win.open-copy",              "<Ctrl><shift>N", NULL,
 -          "win.save-as",                "<Ctrl>S", NULL,
 +          "win.save",                   "<Ctrl>S", NULL,
 +          "win.save-as",                "<Ctrl><Shift>S", NULL,
-           "win.print",                  "<Ctrl>P", NULL,
+           "win.print",                  "<Ctrl><shift>P", NULL,
            "win.show-properties",        "<alt>Return", NULL,
            "win.copy",                   "<Ctrl>C", "<Ctrl>Insert", NULL,
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index d8970e33..73124260 100644
+index 2ed77763..e25e5443 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -3222,6 +3222,31 @@ ev_window_cmd_save_as (GSimpleAction *action,
+@@ -3234,6 +3234,31 @@ ev_window_cmd_save_as (GSimpleAction *action,
  	ev_window_save_as (window);
  }
  
@@ -59,7 +59,7 @@ index d8970e33..73124260 100644
  static void
  ev_window_cmd_send_to (GSimpleAction *action,
  		       GVariant      *parameter,
-@@ -3885,7 +3910,7 @@ document_modified_confirmation_dialog_response (GtkDialog *dialog,
+@@ -3897,7 +3922,7 @@ document_modified_confirmation_dialog_response (GtkDialog *dialog,
  	switch (response) {
  	case GTK_RESPONSE_YES:
  		priv->close_after_save = TRUE;
@@ -68,7 +68,7 @@ index d8970e33..73124260 100644
  		break;
  	case GTK_RESPONSE_NO:
  		gtk_widget_destroy (GTK_WIDGET (ev_window));
-@@ -3939,15 +3964,15 @@ ev_window_check_document_modified (EvWindow      *ev_window,
+@@ -3951,15 +3976,15 @@ ev_window_check_document_modified (EvWindow      *ev_window,
  				  G_CALLBACK (document_modified_reload_dialog_response),
  				  ev_window);
  	} else {
@@ -89,7 +89,7 @@ index d8970e33..73124260 100644
  				GTK_RESPONSE_YES,
  				NULL);
  		g_signal_connect (dialog, "response",
-@@ -6280,6 +6305,7 @@ static const GActionEntry actions[] = {
+@@ -6292,6 +6317,7 @@ static const GActionEntry actions[] = {
  	{ "new", ev_window_cmd_new_window },
  	{ "open", ev_window_cmd_file_open },
  	{ "open-copy", ev_window_cmd_file_open_copy },

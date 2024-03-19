@@ -1,4 +1,4 @@
-From 0f78c4adf507c1fc52471709454e04c6a03e4459 Mon Sep 17 00:00:00 2001
+From ff94eb9633e4370f37b51d58dc64ea1c33cbe37c Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 11 Feb 2023 00:20:43 +0100
 Subject: initially-hide-menu-bar.patch
@@ -8,7 +8,7 @@ Subject: initially-hide-menu-bar.patch
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/shell/evince-toolbar.ui b/shell/evince-toolbar.ui
-index 4add3ecd..eed76bf1 100644
+index f3b68066..a9dcaefa 100644
 --- a/shell/evince-toolbar.ui
 +++ b/shell/evince-toolbar.ui
 @@ -3,7 +3,7 @@

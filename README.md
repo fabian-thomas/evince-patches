@@ -44,8 +44,10 @@ Instructions below.
 
 First you need to get the latest evince code. Then you need to clone this patches
 repo. After that you can start applying any patches you would like to have
-included in your build. Currently, they do not have to be applied in any specific
-order. I suggest first applying all patches, and only after that changing stuff
+included in your build. Applying them in any other order than the lexical one is currently not supported.
+Also you might run into various issues when you apply only some of the patches since they may depend on each other.
+These safest choice is to just include every patch.
+I suggest first applying all patches, and only after that changing stuff
 in the code by hand.
 For building instructions refer to the [building section](#building).
 ``` sh

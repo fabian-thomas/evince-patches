@@ -1,4 +1,4 @@
-From 8fb13b3fad7567c3a341f65160dac535ecaaa573 Mon Sep 17 00:00:00 2001
+From e510b34cf325930f86c5f896bdaf0f3cadd076ef Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:21:40 +0200
 Subject: custom-commands.patch
@@ -11,18 +11,18 @@ Subject: custom-commands.patch
  4 files changed, 63 insertions(+), 12 deletions(-)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index ac60e47f..4cf92c03 100644
+index 6cd80101..d391bef7 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -943,6 +943,8 @@ ev_application_dbus_register (GApplication    *gapplication,
- 
-         return TRUE;
- }
+@@ -813,6 +813,8 @@ static void
+ ev_application_startup (GApplication *gapplication)
+ {
+         const gchar *action_accels[] = {
 +          "win.open-notes",             "e", NULL,
 +          "win.assoc",                  "<shift>A", NULL,
- 
- static void
- ev_application_dbus_unregister (GApplication    *gapplication,
+           "win.open",                   "<Ctrl><shift>O", NULL,
+           "win.open-copy",              "<Ctrl><shift>N", NULL,
+           "win.save",                   "<Ctrl>S", NULL,
 diff --git a/shell/ev-window-title.c b/shell/ev-window-title.c
 index fa2ae97e..7778314f 100644
 --- a/shell/ev-window-title.c
@@ -85,10 +85,10 @@ index 1e585704..e0c2660c 100644
  void	       ev_window_title_set_type     (EvWindowTitle     *window_title,
  					     EvWindowTitleType  type);
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index d8970e33..aa2c2f89 100644
+index 6634dc0e..c17ac0c3 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -90,6 +90,9 @@
+@@ -91,6 +91,9 @@
  #include "ev-bookmarks.h"
  #include "ev-recent-view.h"
  #include "ev-search-box.h"
@@ -98,8 +98,8 @@ index d8970e33..aa2c2f89 100644
  
  #ifdef ENABLE_DBUS
  #include "ev-gdbus-generated.h"
-@@ -642,6 +645,40 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
- 				      !recent_view_mode);
+@@ -655,6 +658,40 @@ ev_window_cmd_action_menubar (GSimpleAction *action,
+ 	gtk_widget_set_visible(menubar_widget, !gtk_widget_get_visible(menubar_widget));
  }
  
 +static void
@@ -139,7 +139,7 @@ index d8970e33..aa2c2f89 100644
  static void
  set_widget_visibility (GtkWidget *widget, gboolean visible)
  {
-@@ -6341,7 +6378,9 @@ static const GActionEntry actions[] = {
+@@ -6417,7 +6454,9 @@ static const GActionEntry actions[] = {
  	{ "open-attachment", ev_window_popup_cmd_open_attachment },
  	{ "save-attachment", ev_window_popup_cmd_save_attachment_as },
  	{ "annot-properties", ev_window_popup_cmd_annot_properties },
