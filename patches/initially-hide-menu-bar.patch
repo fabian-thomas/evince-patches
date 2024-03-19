@@ -1,4 +1,4 @@
-From f3f6ed03c91c0118d548d95d370a875a4ccfe4af Mon Sep 17 00:00:00 2001
+From 0f78c4adf507c1fc52471709454e04c6a03e4459 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 11 Feb 2023 00:20:43 +0100
 Subject: initially-hide-menu-bar.patch
@@ -8,7 +8,7 @@ Subject: initially-hide-menu-bar.patch
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/shell/evince-toolbar.ui b/shell/evince-toolbar.ui
-index b36e6718..2cec7300 100644
+index 4add3ecd..eed76bf1 100644
 --- a/shell/evince-toolbar.ui
 +++ b/shell/evince-toolbar.ui
 @@ -3,7 +3,7 @@
@@ -21,5 +21,5 @@ index b36e6718..2cec7300 100644
            <object class="GtkButton" id="open_button">
              <property name="action-name">win.open</property>
 -- 
-2.40.1
+2.44.0
 

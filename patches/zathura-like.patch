@@ -1,4 +1,4 @@
-From 232ba58b7fc4490e33cc552fe59dbecd6e8ac505 Mon Sep 17 00:00:00 2001
+From 49f17cedddfa657015375621219c3aa486ab5da7 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Thu, 15 Jun 2023 14:58:46 +0200
 Subject: zathura-like.patch
@@ -348,7 +348,7 @@ index 00000000..f33bae48
 +
 +G_END_DECLS
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 5aecffb1..d424fb08 100644
+index d8970e33..c91a3690 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -87,6 +87,7 @@
@@ -359,7 +359,7 @@ index 5aecffb1..d424fb08 100644
  #include "ev-bookmarks.h"
  #include "ev-recent-view.h"
  #include "ev-search-box.h"
-@@ -138,6 +139,7 @@ typedef struct {
+@@ -135,6 +136,7 @@ typedef struct {
  
  	GtkWidget *main_box;
  	GtkWidget *toolbar;
@@ -367,7 +367,7 @@ index 5aecffb1..d424fb08 100644
  	GtkWidget *hpaned;
  	GtkWidget *view_box;
  	GtkWidget *sidebar;
-@@ -7621,6 +7623,15 @@ ev_window_init (EvWindow *ev_window)
+@@ -7548,6 +7550,15 @@ ev_window_init (EvWindow *ev_window)
  			 priv->sidebar, FALSE, FALSE);
  	gtk_widget_show (priv->sidebar);
  
@@ -413,11 +413,11 @@ index 00000000..618f9681
 +  </template>
 +</interface>
 diff --git a/shell/evince.gresource.xml b/shell/evince.gresource.xml
-index 189f5b9b..ceb715cf 100644
+index bf651f46..cc53f7a6 100644
 --- a/shell/evince.gresource.xml
 +++ b/shell/evince.gresource.xml
-@@ -29,6 +29,7 @@
-     <file alias="ui/sidebar.ui" compressed="true" preprocess="xml-stripblanks">evince-sidebar.ui</file>
+@@ -30,6 +30,7 @@
+     <file alias="ui/sidebar-annotations.ui" compressed="true" preprocess="xml-stripblanks">evince-sidebar-annotations.ui</file>
      <file alias="ui/sidebar-bookmarks.ui" compressed="true" preprocess="xml-stripblanks">evince-sidebar-bookmarks.ui</file>
      <file alias="ui/ev-toolbar.ui" compressed="true" preprocess="xml-stripblanks">evince-toolbar.ui</file>
 +    <file alias="ui/ev-statusbar.ui" compressed="true" preprocess="xml-stripblanks">evince-statusbar.ui</file>
@@ -425,7 +425,7 @@ index 189f5b9b..ceb715cf 100644
    </gresource>
  </gresources>
 diff --git a/shell/meson.build b/shell/meson.build
-index f72a671a..c53e5b22 100644
+index 28dd588c..02c884e3 100644
 --- a/shell/meson.build
 +++ b/shell/meson.build
 @@ -17,6 +17,7 @@ evince_sources = files(
@@ -437,5 +437,5 @@ index f72a671a..c53e5b22 100644
    'ev-window.c',
    'ev-window-title.c',
 -- 
-2.41.0
+2.44.0
 

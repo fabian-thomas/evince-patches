@@ -1,7 +1,7 @@
-From 2db8561f5749e8243067598d58586af9e8191239 Mon Sep 17 00:00:00 2001
+From 46e160202a90414ef0de029431cabb98b5c6bcee Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Tue, 4 Jul 2023 15:41:29 +0200
-Subject: [PATCH] Add web search action
+Subject: add-web-search-action.patch
 
 ---
  shell/ev-window.c     | 37 +++++++++++++++++++++++++++++++++++++

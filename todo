@@ -1,3 +1,0 @@
-add script that applies patch and generates format-patch to fix patch context (script that creates the patches)
-new tag
-delete remote legacy branches and force push smaller local repo

@@ -1,18 +1,32 @@
-From 7afa13497e94e87d81119f94dbb3d7a82ee5df7a Mon Sep 17 00:00:00 2001
+From 20870c3061d0852c9201b8dedf626130e1fa0f0e Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:17:23 +0200
 Subject: add-annotation-right-click.patch
 
 ---
+ shell/ev-window.c     | 2 +-
  shell/evince-menus.ui | 5 +++++
- 1 file changed, 5 insertions(+)
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
+diff --git a/shell/ev-window.c b/shell/ev-window.c
+index d8970e33..473933f9 100644
+--- a/shell/ev-window.c
++++ b/shell/ev-window.c
+@@ -6326,7 +6326,7 @@ static const GActionEntry actions[] = {
+ 	{ "escape", ev_window_cmd_escape },
+ 	{ "toggle-menu", ev_window_cmd_action_menu },
+ 	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
+-	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
++	{ "add-annotation", ev_window_cmd_add_annotation },
+ 	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
+ 	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },
+ 	{ "about", ev_window_cmd_about },
 diff --git a/shell/evince-menus.ui b/shell/evince-menus.ui
-index 11ba15ca..3888f009 100644
+index e22f3141..c2ba90b2 100644
 --- a/shell/evince-menus.ui
 +++ b/shell/evince-menus.ui
 @@ -111,6 +111,11 @@
-         <attribute name="action">win.annotate-selected-text</attribute>
+         <attribute name="action">win.highlight-annotation</attribute>
          <attribute name='hidden-when'>action-disabled</attribute>
        </item>
 +      <item>
@@ -24,17 +38,5 @@ index 11ba15ca..3888f009 100644
          <attribute name="label" translatable="yes">Open Containing _Folder</attribute>
          <attribute name="action">win.open-containing-folder</attribute>
 -- 
-2.40.1
+2.44.0
 
-diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 8dafb548..2d32874d 100644
---- a/shell/ev-window.c
-+++ b/shell/ev-window.c
-@@ -6416,6 +6416,6 @@ static const GActionEntry actions[] = {
- 	{ "toggle-menu", ev_window_cmd_action_menu },
- 	{ "toggle-menubar", ev_window_cmd_action_menubar },
- 	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
--	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
-+	{ "add-annotation", ev_window_cmd_add_annotation },
- 	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
- 	{ "toggle-edit-annots", NULL, NULL, "false", ev_window_cmd_toggle_edit_annots },

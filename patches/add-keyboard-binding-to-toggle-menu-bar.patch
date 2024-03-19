@@ -1,4 +1,4 @@
-From e7aaab4366adcbf1c1d441672bad6af15e10b460 Mon Sep 17 00:00:00 2001
+From 42c5287221309b42a0f11babdb3e239c9933544a Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 10 Feb 2023 23:42:59 +0100
 Subject: add-keyboard-binding-to-toggle-menu-bar.patch
@@ -9,10 +9,10 @@ Subject: add-keyboard-binding-to-toggle-menu-bar.patch
  2 files changed, 14 insertions(+)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index bd4d64b0..a5de00cd 100644
+index ac60e47f..ae812bc8 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -971,6 +971,7 @@ ev_application_startup (GApplication *gapplication)
+@@ -839,6 +839,7 @@ ev_application_startup (GApplication *gapplication)
            "win.sizing-mode::automatic", "a", NULL,
            "win.default-zoom",           "<Ctrl>0", "<Ctrl>KP_0", NULL,
            "win.toggle-menu",            "F10", NULL,
@@ -21,10 +21,10 @@ index bd4d64b0..a5de00cd 100644
            "win.zoom-in",                "plus", "<Ctrl>plus", "KP_Add", "<Ctrl>KP_Add", "equal", "<Ctrl>equal", NULL,
            "win.zoom-out",               "minus", "<Ctrl>minus", "KP_Subtract", "<Ctrl>KP_Subtract", NULL,
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index f653aaed..605e5ca6 100644
+index d8970e33..801b4952 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
-@@ -655,6 +655,18 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
+@@ -642,6 +642,18 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
  				      !recent_view_mode);
  }
  
@@ -43,14 +43,14 @@ index f653aaed..605e5ca6 100644
  static void
  set_widget_visibility (GtkWidget *widget, gboolean visible)
  {
-@@ -6428,6 +6440,7 @@ static const GActionEntry actions[] = {
+@@ -6325,6 +6337,7 @@ static const GActionEntry actions[] = {
  	{ "default-zoom", ev_window_cmd_set_default_zoom },
  	{ "escape", ev_window_cmd_escape },
  	{ "toggle-menu", ev_window_cmd_action_menu },
 +	{ "toggle-menubar", ev_window_cmd_action_menubar },
  	{ "caret-navigation", NULL, NULL, "false", ev_window_cmd_view_toggle_caret_navigation },
  	{ "add-annotation", NULL, NULL, "false", ev_window_cmd_add_annotation },
- 	{ "highlight-annotation", NULL, NULL, "false", ev_window_cmd_add_highlight_annotation },
+ 	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
 -- 
-2.40.1
+2.44.0
 

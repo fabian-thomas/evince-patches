@@ -1,4 +1,4 @@
-From 5178edc9f13e447184f72a48d687095e37691ff2 Mon Sep 17 00:00:00 2001
+From 8fb13b3fad7567c3a341f65160dac535ecaaa573 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:21:40 +0200
 Subject: custom-commands.patch
@@ -11,20 +11,20 @@ Subject: custom-commands.patch
  4 files changed, 63 insertions(+), 12 deletions(-)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index 720fad13..2655ffc6 100644
+index ac60e47f..4cf92c03 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -949,6 +949,8 @@ static void
- ev_application_startup (GApplication *gapplication)
- {
-         const gchar *action_accels[] = {
+@@ -943,6 +943,8 @@ ev_application_dbus_register (GApplication    *gapplication,
+ 
+         return TRUE;
+ }
 +          "win.open-notes",             "e", NULL,
 +          "win.assoc",                  "<shift>A", NULL,
-           "win.open",                   "<Ctrl><shift>O", NULL,
-           "win.open-copy",              "<Ctrl><shift>N", NULL,
-           "win.save-as",                "<Ctrl>S", NULL,
+ 
+ static void
+ ev_application_dbus_unregister (GApplication    *gapplication,
 diff --git a/shell/ev-window-title.c b/shell/ev-window-title.c
-index 02bd9f1b..b5894216 100644
+index fa2ae97e..7778314f 100644
 --- a/shell/ev-window-title.c
 +++ b/shell/ev-window-title.c
 @@ -38,15 +38,15 @@ typedef struct
@@ -85,7 +85,7 @@ index 1e585704..e0c2660c 100644
  void	       ev_window_title_set_type     (EvWindowTitle     *window_title,
  					     EvWindowTitleType  type);
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index df4669a2..aa9ce72c 100644
+index d8970e33..aa2c2f89 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -90,6 +90,9 @@
@@ -98,8 +98,8 @@ index df4669a2..aa9ce72c 100644
  
  #ifdef ENABLE_DBUS
  #include "ev-gdbus-generated.h"
-@@ -664,6 +667,40 @@ ev_window_cmd_action_menubar (GSimpleAction *action,
- 	gtk_widget_set_visible(menubar_widget, !gtk_widget_get_visible(menubar_widget));
+@@ -642,6 +645,40 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
+ 				      !recent_view_mode);
  }
  
 +static void
@@ -139,7 +139,7 @@ index df4669a2..aa9ce72c 100644
  static void
  set_widget_visibility (GtkWidget *widget, gboolean visible)
  {
-@@ -6334,7 +6371,9 @@ static const GActionEntry actions[] = {
+@@ -6341,7 +6378,9 @@ static const GActionEntry actions[] = {
  	{ "open-attachment", ev_window_popup_cmd_open_attachment },
  	{ "save-attachment", ev_window_popup_cmd_save_attachment_as },
  	{ "annot-properties", ev_window_popup_cmd_annot_properties },
@@ -151,5 +151,5 @@ index df4669a2..aa9ce72c 100644
  
  static void
 -- 
-2.40.1
+2.44.0
 
