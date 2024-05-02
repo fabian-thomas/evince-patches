@@ -1,6 +1,12 @@
 (final: prev: {
   evince = prev.evince.overrideAttrs (old: rec {
-    version = old.version + "-patched";
+    pname = old.pname + "-patched";
+    version = "46.1";
+
+    src = prev.fetchurl {
+      url = "mirror://gnome/sources/evince/${prev.lib.versions.major version}/${old.pname}-${version}.tar.xz";
+      sha256 = "sha256-lLtSU2WwYKKML2AX0iy/KvURVQclSqQum/wAC7wYq2I=";
+    };
 
     patches = (old.patches or []) ++ [
       ./patches/0-vim-like-bindings.patch
