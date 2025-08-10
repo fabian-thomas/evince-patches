@@ -1,4 +1,4 @@
-From ff94eb9633e4370f37b51d58dc64ea1c33cbe37c Mon Sep 17 00:00:00 2001
+From 0a1b7c9e457de1cc54e380e8ea3c2670b1649f4f Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Sat, 11 Feb 2023 00:20:43 +0100
 Subject: initially-hide-menu-bar.patch
@@ -21,5 +21,5 @@ index f3b68066..a9dcaefa 100644
            <object class="GtkButton" id="open_button">
              <property name="action-name">win.open</property>
 -- 
-2.44.0
+2.49.0
 

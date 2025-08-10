@@ -1,11 +1,11 @@
 (final: prev: {
   evince = prev.evince.overrideAttrs (old: rec {
     pname = old.pname + "-patched";
-    version = "46.3";
+    version = "48.1";
 
     src = prev.fetchurl {
       url = "mirror://gnome/sources/evince/${prev.lib.versions.major version}/${old.pname}-${version}.tar.xz";
-      sha256 = "sha256-vA0dQbnX/8di6Z0qv6+sv3RRgvCzHYbbXuyMZ/XzAGs=";
+      sha256 = "sha256-fYuab6OgXT9bkEiFkCdojHOniP9ukjvDlFEmiElD+hA=";
     };
 
     patches = (old.patches or []) ++ [

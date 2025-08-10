@@ -1,4 +1,4 @@
-From ccc8cd2d460fdddaeee171004209d4a44a60eebb Mon Sep 17 00:00:00 2001
+From e428b3df9db895bdb17300371c9d6fd26bf8b522 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 10 Feb 2023 23:42:59 +0100
 Subject: add-keyboard-binding-to-toggle-menu-bar.patch
@@ -9,10 +9,10 @@ Subject: add-keyboard-binding-to-toggle-menu-bar.patch
  2 files changed, 14 insertions(+)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index f19b758c..39dfe1f7 100644
+index a93e16d0..fbfbbbd4 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -839,6 +839,7 @@ ev_application_startup (GApplication *gapplication)
+@@ -838,6 +838,7 @@ ev_application_startup (GApplication *gapplication)
            "win.sizing-mode::automatic", "a", NULL,
            "win.default-zoom",           "<Ctrl>0", "<Ctrl>KP_0", NULL,
            "win.toggle-menu",            "F10", NULL,
@@ -21,7 +21,7 @@ index f19b758c..39dfe1f7 100644
            "win.zoom-in",                "plus", "<Ctrl>plus", "KP_Add", "<Ctrl>KP_Add", "equal", "<Ctrl>equal", NULL,
            "win.zoom-out",               "minus", "<Ctrl>minus", "KP_Subtract", "<Ctrl>KP_Subtract", NULL,
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 473933f9..2ed77763 100644
+index 367b596f..49301fba 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -642,6 +642,18 @@ ev_window_update_actions_sensitivity (EvWindow *ev_window)
@@ -43,7 +43,7 @@ index 473933f9..2ed77763 100644
  static void
  set_widget_visibility (GtkWidget *widget, gboolean visible)
  {
-@@ -6325,6 +6337,7 @@ static const GActionEntry actions[] = {
+@@ -6361,6 +6373,7 @@ static const GActionEntry actions[] = {
  	{ "default-zoom", ev_window_cmd_set_default_zoom },
  	{ "escape", ev_window_cmd_escape },
  	{ "toggle-menu", ev_window_cmd_action_menu },
@@ -52,5 +52,5 @@ index 473933f9..2ed77763 100644
  	{ "add-annotation", ev_window_cmd_add_annotation },
  	{ "highlight-annotation", ev_window_cmd_add_highlight_annotation },
 -- 
-2.44.0
+2.49.0
 

@@ -1,4 +1,4 @@
-From 4f2a0babde163fd09716ac9f568e38634af47c0f Mon Sep 17 00:00:00 2001
+From 68a49a2c8e942c23dbc952d6cd58f00b4b30efbe Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Thu, 15 Jun 2023 14:58:46 +0200
 Subject: zathura-like.patch
@@ -348,7 +348,7 @@ index 00000000..f33bae48
 +
 +G_END_DECLS
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index a4357549..eef480f5 100644
+index c5ad8850..0c60932c 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -88,6 +88,7 @@
@@ -367,7 +367,7 @@ index a4357549..eef480f5 100644
  	GtkWidget *hpaned;
  	GtkWidget *view_box;
  	GtkWidget *sidebar;
-@@ -7681,6 +7683,15 @@ ev_window_init (EvWindow *ev_window)
+@@ -7717,6 +7719,15 @@ ev_window_init (EvWindow *ev_window)
  			 priv->sidebar, FALSE, FALSE);
  	gtk_widget_show (priv->sidebar);
  
@@ -437,5 +437,5 @@ index 28dd588c..02c884e3 100644
    'ev-window.c',
    'ev-window-title.c',
 -- 
-2.44.0
+2.49.0
 

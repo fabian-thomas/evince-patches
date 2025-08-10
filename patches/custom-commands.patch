@@ -1,4 +1,4 @@
-From e510b34cf325930f86c5f896bdaf0f3cadd076ef Mon Sep 17 00:00:00 2001
+From 77ccd6893c5581c3c8f411837a1837b0ff0d7093 Mon Sep 17 00:00:00 2001
 From: Fabian Thomas <fabian@fabianthomas.de>
 Date: Fri, 12 May 2023 23:21:40 +0200
 Subject: custom-commands.patch
@@ -11,10 +11,10 @@ Subject: custom-commands.patch
  4 files changed, 63 insertions(+), 12 deletions(-)
 
 diff --git a/shell/ev-application.c b/shell/ev-application.c
-index 6cd80101..d391bef7 100644
+index 2dd5b8c6..8c1fdec5 100644
 --- a/shell/ev-application.c
 +++ b/shell/ev-application.c
-@@ -813,6 +813,8 @@ static void
+@@ -812,6 +812,8 @@ static void
  ev_application_startup (GApplication *gapplication)
  {
          const gchar *action_accels[] = {
@@ -85,7 +85,7 @@ index 1e585704..e0c2660c 100644
  void	       ev_window_title_set_type     (EvWindowTitle     *window_title,
  					     EvWindowTitleType  type);
 diff --git a/shell/ev-window.c b/shell/ev-window.c
-index 6634dc0e..c17ac0c3 100644
+index c1ae6057..7cda859c 100644
 --- a/shell/ev-window.c
 +++ b/shell/ev-window.c
 @@ -91,6 +91,9 @@
@@ -139,7 +139,7 @@ index 6634dc0e..c17ac0c3 100644
  static void
  set_widget_visibility (GtkWidget *widget, gboolean visible)
  {
-@@ -6417,7 +6454,9 @@ static const GActionEntry actions[] = {
+@@ -6453,7 +6490,9 @@ static const GActionEntry actions[] = {
  	{ "open-attachment", ev_window_popup_cmd_open_attachment },
  	{ "save-attachment", ev_window_popup_cmd_save_attachment_as },
  	{ "annot-properties", ev_window_popup_cmd_annot_properties },
@@ -151,5 +151,5 @@ index 6634dc0e..c17ac0c3 100644
  
  static void
 -- 
-2.44.0
+2.49.0
 
